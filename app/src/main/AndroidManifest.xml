@@ -20,7 +20,17 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.GameActivity" />
+        <activity
+            android:name=".ui.GameActivity"
+            android:launchMode="singleTop" />
+
+        <activity
+            android:name=".ui.GiftListActivity"
+            android:launchMode="singleTop" />
+
+        <activity
+            android:name=".ui.PayActivity"
+            android:launchMode="singleTop" />
     </application>
 
 </manifest>
