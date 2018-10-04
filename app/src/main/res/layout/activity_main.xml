@@ -9,22 +9,6 @@
     android:background="@mipmap/bg_ad"
     android:gravity="center_horizontal">
 
-    <com.youth.banner.Banner
-        android:id="@+id/banner"
-        android:layout_marginTop="69dp"
-        android:layout_width="1108dp"
-        android:layout_height="748dp"
-        android:background="@mipmap/bg_ad_banner"
-        android:padding="17.5dp"
-        app:indicator_margin="20dp"
-        app:indicator_width="30dp"
-        app:indicator_height="31dp"
-        app:indicator_drawable_selected="@drawable/ad_indicator_selected"
-        app:indicator_drawable_unselected="@drawable/ad_indicator_un_select"
-        app:image_scale_type="fit_xy"
-        app:scroll_time="3000"
-        app:delay_time="5000"/>
-
     <Button
         android:id="@+id/grabGift"
         android:layout_width="300dp"
@@ -32,4 +16,22 @@
         android:layout_marginTop="30dp"
         android:background="@drawable/bg_btn_grab_gift"
         android:elevation="14dp"/>
+
+    <com.youth.banner.Banner
+        android:id="@+id/banner"
+        android:layout_width="1108dp"
+        android:layout_height="748dp"
+        android:layout_marginTop="69dp"
+        android:background="@mipmap/bg_ad_banner"
+        android:padding="17.5dp"
+        app:delay_time="5000"
+        app:image_scale_type="fit_xy"
+        app:indicator_drawable_selected="@drawable/ad_indicator_selected"
+        app:indicator_drawable_unselected="@drawable/ad_indicator_un_select"
+        app:indicator_height="31dp"
+        app:indicator_margin="20dp"
+        app:indicator_width="30dp"
+        app:scroll_time="3000" />
+
+
 </LinearLayout>
