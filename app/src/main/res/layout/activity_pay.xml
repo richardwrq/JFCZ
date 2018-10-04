@@ -33,12 +33,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
+        android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/ivGift"
         app:layout_constraintTop_toTopOf="@+id/vPayBox"
-        app:layout_constraintRight_toLeftOf="@+id/vQRCode"
+        app:layout_constraintEnd_toStartOf="@+id/vQRCode"
         app:layout_constraintBottom_toTopOf="@+id/tvGiftName"
+        app:layout_constrainedWidth="true"
         app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintHorizontal_bias="0"
         android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
         tools:text="你选中1号商品"/>
 
     <TextView
@@ -47,11 +51,15 @@
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
         android:textStyle="bold"
+        android:textSize="25.3dp"
         app:layout_constraintStart_toEndOf="@+id/ivGift"
         app:layout_constraintTop_toBottomOf="@+id/tvGiftNumber"
-        app:layout_constraintRight_toLeftOf="@+id/vQRCode"
+        app:layout_constraintEnd_toStartOf="@+id/vQRCode"
         app:layout_constraintBottom_toTopOf="@+id/tvGiftPrice"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_bias="0"
         android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginTop="18dp"
         tools:text="猫咪公仔"/>
 
@@ -60,13 +68,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
-        android:textStyle="bold"
+        android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/ivGift"
         app:layout_constraintTop_toBottomOf="@+id/tvGiftName"
-        app:layout_constraintRight_toLeftOf="@+id/vQRCode"
+        app:layout_constraintEnd_toStartOf="@+id/vQRCode"
         app:layout_constraintBottom_toBottomOf="@+id/vPayBox"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_bias="0"
         android:layout_marginStart="20dp"
         android:layout_marginTop="13.3dp"
+        android:layout_marginEnd="10dp"
         tools:text="售价：50元"/>
 
     <View
@@ -82,8 +93,8 @@
 
     <ImageView
         android:id="@+id/ivQRCode"
-        android:layout_width="228dp"
-        android:layout_height="228dp"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="@id/vQRCode"
         app:layout_constraintTop_toTopOf="@id/vQRCode"

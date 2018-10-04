@@ -20,10 +20,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <FrameLayout
-        android:id="@+id/flGift"
-        android:layout_width="254.7dp"
-        android:layout_height="254.7dp"
+    <View
+        android:id="@+id/vGift"
+        android:layout_width="261.3dp"
+        android:layout_height="260.7dp"
         app:layout_constraintStart_toEndOf="@+id/rvGiftList"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,49 +31,38 @@
         android:layout_marginStart="59.3dp"
         android:layout_marginTop="141.3dp"
         android:layout_marginEnd="62dp"
-        android:background="@mipmap/bg_gift"
-        android:padding="10dp">
+        android:background="@mipmap/bg_gift"/>
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="@android:color/transparent">
+    <ImageView
+        android:id="@+id/ivGift"
+        android:layout_width="130.7dp"
+        android:layout_height="180dp"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="@id/vGift"
+        app:layout_constraintTop_toTopOf="@id/vGift"
+        app:layout_constraintEnd_toEndOf="@id/vGift"
+        android:layout_marginTop="18dp"
+        android:src="@color/colorPrimary"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/ivGift"
-                    android:layout_width="254.7dp"
-                    android:layout_height="195.4dp"
-                    android:scaleType="fitXY"
-                    android:src="@color/colorPrimary"/>
-
-                <TextView
-                    android:id="@+id/tvGiftNumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textSize="20dp"
-                    android:textColor="@android:color/white"
-                    android:gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:text="你选中了1号商品"
-                    android:background="@android:color/transparent"/>
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
-    </FrameLayout>
+    <TextView
+        android:id="@+id/tvGiftNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textColor="@android:color/white"
+        app:layout_constraintStart_toStartOf="@id/vGift"
+        app:layout_constraintTop_toBottomOf="@id/ivGift"
+        app:layout_constraintEnd_toEndOf="@id/vGift"
+        android:layout_marginTop="18.7dp"
+        android:text="你选中了1号商品"
+        android:background="@android:color/transparent"/>
 
     <TextView
         android:id="@+id/tvGiftName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@+id/rvGiftList"
-        app:layout_constraintTop_toBottomOf="@+id/flGift"
+        app:layout_constraintTop_toBottomOf="@+id/vGift"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/divider"
         android:layout_marginTop="23.3dp"
@@ -126,6 +115,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/rvGiftList"
         app:layout_constraintHorizontal_chainStyle="packed"
         android:background="@drawable/bg_btn_buy"
+        android:layout_marginTop="56dp"
         android:textSize="20dp"
         android:textColor="#212121"/>
 
@@ -135,7 +125,7 @@
         android:layout_height="45.3dp"
         android:layout_marginLeft="26dp"
         app:layout_constraintStart_toEndOf="@+id/btnBuy"
-        app:layout_constraintTop_toBottomOf="@+id/tvChallengePrice"
+        app:layout_constraintTop_toTopOf="@+id/btnBuy"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/rvGiftList"
         android:background="@drawable/bg_btn_challenge"

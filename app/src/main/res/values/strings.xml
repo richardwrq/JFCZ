@@ -3,6 +3,6 @@
 
     <string name="gift_price_red"><Data><![CDATA[售价： <font color="#ff0012"><b>%s</b></font>元]]></Data></string>
     <string name="gift_challenge_price_red"><Data><![CDATA[挑战： <font color="#ff0012"><b>%s</b></font>元]]></Data></string>
-    <string name="gift_price">价格： %s元</string>
+    <string name="gift_price">价格：%s元</string>
     <string name="choose_gift">你选中%d号商品</string>
 </resources>
