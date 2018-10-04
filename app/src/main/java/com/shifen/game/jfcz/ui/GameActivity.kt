@@ -4,8 +4,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v7.app.AppCompatActivity
-import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
@@ -21,7 +19,7 @@ class GameActivity : AppCompatActivity() {
     private var waitKnifeNum = 7
     private var waitKnifeViews = ArrayList<ImageView>()
 
-    private val animation = TranslateAnimation(0f, 0f, 0f, -400f)
+    private val animation = TranslateAnimation(0f, 0f, 0f, -200f)
     private lateinit var roundViews: Array<TextView>
     private var centerBitmapIds = arrayOf(R.mipmap.ic_watermelon, R.mipmap.ic_oranger, R.mipmap.ic_peach)
     private var roundIndexIds = arrayOf(R.mipmap.ic_round_1, R.mipmap.ic_round_2, R.mipmap.ic_round_3)
@@ -86,13 +84,13 @@ class GameActivity : AppCompatActivity() {
 
         nextRound()
 
-        var metric = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(metric)
-        val width = metric.widthPixels  // 屏幕宽度（像素）
-        val height = metric.heightPixels  // 屏幕高度（像素）
-        val density = metric.density  // 屏幕密度（0.75 / 1.0 / 1.5）
-        val densityDpi = metric.densityDpi  // 屏幕密度DPI（120 / 160 / 240）
-        Log.e("czm", "width = $width ---  height = $height ---- density = $density --- densityDpi = $densityDpi")
+//        val metric = DisplayMetrics()
+//        windowManager.defaultDisplay.getMetrics(metric)
+//        val width = metric.widthPixels  // 屏幕宽度（像素）
+//        val height = metric.heightPixels  // 屏幕高度（像素）
+//        val density = metric.density  // 屏幕密度（0.75 / 1.0 / 1.5）
+//        val densityDpi = metric.densityDpi  // 屏幕密度DPI（120 / 160 / 240）
+//        Log.e("czm", "width = $width ---  height = $height ---- density = $density --- densityDpi = $densityDpi")
         hideBottomUIMenu()
     }
 
@@ -193,7 +191,6 @@ class GameActivity : AppCompatActivity() {
                 countDownSeconds--
                 tvCountDownTime.text = countDownSeconds.toString()
             }
-
         }
     }
 
@@ -202,14 +199,13 @@ class GameActivity : AppCompatActivity() {
      */
     private fun hideBottomUIMenu() {
         //隐藏虚拟按键，并且全屏
+        val decorView = window.decorView
         if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
-            var v = this.getWindow().getDecorView()
-            v.setSystemUiVisibility(View.GONE);
+            decorView.systemUiVisibility = View.GONE
         } else if (Build.VERSION.SDK_INT >= 19) {
             //for new api versions.
-            var decorView = getWindow().getDecorView();
-            var uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN
-            decorView.setSystemUiVisibility(uiOptions);
+            val uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN
+            decorView.systemUiVisibility = uiOptions;
         }
     }
 

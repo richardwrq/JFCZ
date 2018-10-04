@@ -18,6 +18,8 @@ class SmallGapsView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    private val FAILUR_ANGLE = 7
+
     private var countDownInterval = 10L
     private var countDownTimer = createCountDownTimer()
 
@@ -90,7 +92,7 @@ class SmallGapsView @JvmOverloads constructor(
         curTime = System.currentTimeMillis()
 
         knifeArray.forEach {
-            if (curAngle in it - 7..it + 7) {
+            if (curAngle in it - FAILUR_ANGLE..it + FAILUR_ANGLE) {
                 isFailure = true
                 result = false
                 countDownTimer.cancel()
