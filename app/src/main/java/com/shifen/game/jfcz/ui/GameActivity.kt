@@ -2,7 +2,6 @@ package com.shifen.game.jfcz.ui
 
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -179,13 +178,13 @@ class GameActivity : BaseActivity() {
             ivResult.setImageResource(R.mipmap.ic_game_win)
             btnGameFinish.visibility = View.VISIBLE
             tvCountDownTimeFailure.visibility = View.GONE
-            btnGameFinish.setImageResource(R.mipmap.ic_finish)
+            btnGameFinish.setImageResource(R.drawable.bg_btn_win)
         } else {
             ltResult.setBackgroundResource(R.mipmap.bg_game)
             ivResult.setImageResource(R.mipmap.ic_game_failure)
             btnGameFinish.visibility = View.VISIBLE
             tvCountDownTimeFailure.visibility = View.VISIBLE
-            btnGameFinish.setImageResource(R.mipmap.ic_start_game_now)
+            btnGameFinish.setImageResource(R.drawable.bg_btn_failure)
             countDownTimerFailure?.cancel()
             countDownSecondsFailure = COUNT_DOWN_SECONDS_FAILURE
             tvCountDownTimeFailure.text = "(${countDownSecondsFailure}s)"
