@@ -92,6 +92,53 @@
             app:layout_constraintBottom_toTopOf="@id/ivKnife"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/ivStar1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="50dp"
+            android:layout_marginTop="280dp"
+            android:src="@mipmap/ic_star_1"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/ivKnife"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivStar2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="300dp"
+            android:src="@mipmap/ic_star_2"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/ivKnife"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <!--<ImageView-->
+            <!--android:id="@+id/ivFruits1"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@mipmap/ic_orange_1"-->
+            <!--app:layout_constraintBottom_toTopOf="@id/ivKnife"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/ivFruits2"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@mipmap/ic_orange_2"-->
+            <!--app:layout_constraintBottom_toTopOf="@id/ivKnife"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toTopOf="parent" />-->
+
         <!--倒计时-->
         <TextView
             android:id="@+id/tvCountDownTime"

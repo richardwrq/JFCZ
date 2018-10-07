@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import android.view.animation.AnimationSet
 import android.view.animation.TranslateAnimation
 import android.widget.ImageView
 import android.widget.TextView
@@ -20,8 +22,12 @@ class GameActivity : AppCompatActivity() {
     private var waitKnifeViews = ArrayList<ImageView>()
 
     private val animation = TranslateAnimation(0f, 0f, 0f, -200f)
+//    private val animation1 = TranslateAnimation(0f, 600f, 0f, 200f)
+//    private val animation2 = TranslateAnimation(0f, -600f, 0f, 200f)
+
+    private val starAnimationSet = AnimationSet(true)
     private lateinit var roundViews: Array<TextView>
-    private var centerBitmapIds = arrayOf(R.mipmap.ic_watermelon, R.mipmap.ic_oranger, R.mipmap.ic_peach)
+    private var centerBitmapIds = arrayOf(R.mipmap.ic_watermelon, R.mipmap.ic_orange, R.mipmap.ic_peach)
     private var roundIndexIds = arrayOf(R.mipmap.ic_round_1, R.mipmap.ic_round_2, R.mipmap.ic_round_3)
     private var isFailure = false
 
@@ -32,6 +38,11 @@ class GameActivity : AppCompatActivity() {
     private var countDownTimerFailure: CountDownTimer? = null
 
     init {
+        val animation1 = AlphaAnimation(0f, 1f)
+        val animation2 = AlphaAnimation(1f, 0f)
+        animation1.duration = 300
+        animation2.duration = 300
+        animation2.startOffset = 300
         animation.duration = 50
         animation.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationRepeat(p0: Animation?) {
@@ -46,8 +57,26 @@ class GameActivity : AppCompatActivity() {
                 if (isFailure) {
                     updateGameResultView(false)
                 } else {
+                    ivStar1.visibility = View.VISIBLE
+                    ivStar1.startAnimation(starAnimationSet)
+                    game.postDelayed({
+                        ivStar2.visibility = View.VISIBLE
+                        ivStar2.startAnimation(starAnimationSet)
+                    }, 100)
+                    game.postDelayed({
+                        ivStar1.visibility = View.INVISIBLE
+                    }, 600)
+                    game.postDelayed({
+                        ivStar2.visibility = View.INVISIBLE
+                    }, 700)
+
+
                     if (waitKnifeNum == 0) {
                         // 通过当前小关
+//                        animation1.duration = 1500
+//                        animation2.duration = 1500
+//                        ivFruits1.startAnimation(animation1)
+//                        ivFruits2.startAnimation(animation2)
                         nextRound()
                     }
                 }
@@ -102,6 +131,8 @@ class GameActivity : AppCompatActivity() {
             return
         }
         ltRound.visibility = View.VISIBLE
+        ivStar1.visibility = View.INVISIBLE
+        ivStar2.visibility = View.INVISIBLE
         ltGame.visibility = View.GONE
         ltResult.visibility = View.GONE
         ivRoundIndex.setImageResource(roundIndexIds[curRoundIndex])
