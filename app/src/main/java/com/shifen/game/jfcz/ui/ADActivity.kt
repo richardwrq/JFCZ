@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.shifen.game.jfcz.R
 import com.shifen.game.jfcz.utils.BANNER_LIST
@@ -15,7 +14,7 @@ import com.shifen.game.jfcz.utils.getConfig
 import com.youth.banner.BannerConfig
 import kotlinx.android.synthetic.main.activity_main.*
 
-class ADActivity : AppCompatActivity() {
+class ADActivity : BaseActivity() {
 
     companion object {
         val ACTION_REFRESH_BANNER = "action_refresh_banner"

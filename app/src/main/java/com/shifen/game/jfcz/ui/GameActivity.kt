@@ -1,6 +1,5 @@
 package com.shifen.game.jfcz.ui
 
-import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v7.app.AppCompatActivity
@@ -14,7 +13,7 @@ import android.widget.TextView
 import com.shifen.game.jfcz.R
 import kotlinx.android.synthetic.main.activity_game.*
 
-class GameActivity : AppCompatActivity() {
+class GameActivity : BaseActivity() {
     private val COUNT_DOWN_SECONDS = 30
     private val COUNT_DOWN_SECONDS_FAILURE = 10
     private var curRoundIndex = -1
@@ -120,7 +119,6 @@ class GameActivity : AppCompatActivity() {
 //        val density = metric.density  // 屏幕密度（0.75 / 1.0 / 1.5）
 //        val densityDpi = metric.densityDpi  // 屏幕密度DPI（120 / 160 / 240）
 //        Log.e("czm", "width = $width ---  height = $height ---- density = $density --- densityDpi = $densityDpi")
-        hideBottomUIMenu()
     }
 
     private fun nextRound() {
@@ -222,21 +220,6 @@ class GameActivity : AppCompatActivity() {
                 countDownSeconds--
                 tvCountDownTime.text = countDownSeconds.toString()
             }
-        }
-    }
-
-    /**
-     * 隐藏虚拟按键，并且全屏
-     */
-    private fun hideBottomUIMenu() {
-        //隐藏虚拟按键，并且全屏
-        val decorView = window.decorView
-        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
-            decorView.systemUiVisibility = View.GONE
-        } else if (Build.VERSION.SDK_INT >= 19) {
-            //for new api versions.
-            val uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN
-            decorView.systemUiVisibility = uiOptions;
         }
     }
 
