@@ -3,7 +3,6 @@ package com.shifen.game.jfcz.ui
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.text.Html
 import android.widget.Toast
@@ -13,7 +12,7 @@ import com.shifen.game.jfcz.ui.adapter.GiftListAdapter
 import com.shifen.game.jfcz.utils.MDGridRvDividerDecoration
 import kotlinx.android.synthetic.main.activity_gift_list.*
 
-class GiftListActivity : AppCompatActivity() {
+class GiftListActivity : BaseActivity() {
 
     private var currentGift: Gift? = null
 

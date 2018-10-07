@@ -3,12 +3,11 @@ package com.shifen.game.jfcz.ui
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.support.v7.app.AppCompatActivity
 import com.shifen.game.jfcz.R
 import com.shifen.game.jfcz.model.Gift
 import kotlinx.android.synthetic.main.activity_pay.*
 
-class PayActivity : AppCompatActivity() {
+class PayActivity : BaseActivity() {
 
     companion object {
         val GIFT_KEY = "GIFT_KEY"
