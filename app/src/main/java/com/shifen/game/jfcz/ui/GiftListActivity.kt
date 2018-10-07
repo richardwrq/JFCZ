@@ -2,9 +2,11 @@ package com.shifen.game.jfcz.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.text.Html
+import android.widget.Toast
 import com.shifen.game.jfcz.R
 import com.shifen.game.jfcz.model.Gift
 import com.shifen.game.jfcz.ui.adapter.GiftListAdapter
@@ -15,11 +17,34 @@ class GiftListActivity : AppCompatActivity() {
 
     private var currentGift: Gift? = null
 
+    private val countDownTimer = object : CountDownTimer(60 * 1000L, 1000L) {
+        override fun onFinish() {
+            finish()
+            val intent = Intent(this@GiftListActivity, ADActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+        }
+
+        override fun onTick(millisUntilFinished: Long) {
+            //do nothing
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gift_list)
 
         init()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        countDownTimer.start()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        countDownTimer.cancel()
     }
 
     private fun init() {
@@ -35,6 +60,8 @@ class GiftListActivity : AppCompatActivity() {
         rvGiftList.adapter = adapter
 
         adapter.onItemClickListener = { _, position ->
+            countDownTimer.start()
+
             currentGift = adapter.getItem(position)
             tvGiftName.text = currentGift?.name
             tvGiftNumber.text = getString(R.string.choose_gift, currentGift?.containerNumber)
@@ -43,11 +70,24 @@ class GiftListActivity : AppCompatActivity() {
         }
 
         btnBuy.setOnClickListener {
+            if (currentGift == null) {
+                countDownTimer.start()
+                Toast.makeText(this, getString(R.string.pls_choose_gift), Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            countDownTimer.cancel()
             startActivity(Intent(this, PayActivity::class.java).apply { putExtra(PayActivity.GIFT_KEY, currentGift) })
         }
 
         btnChallenge.setOnClickListener {
+            if (currentGift == null) {
+                countDownTimer.start()
+                Toast.makeText(this, getString(R.string.pls_choose_gift), Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            countDownTimer.cancel()
             startActivity(Intent(this, GameActivity::class.java))
         }
     }
+
 }

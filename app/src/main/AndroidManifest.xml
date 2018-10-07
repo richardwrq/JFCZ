@@ -3,6 +3,7 @@
     package="com.shifen.game.jfcz">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name=".JFCZApplication"
@@ -31,6 +32,14 @@
         <activity
             android:name=".ui.PayActivity"
             android:launchMode="singleTop" />
+
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5bb8142fb465f51bc800030e"/>
+
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="72fe2d62f461225525dd7e46a9babc6b"/>
     </application>
 
 </manifest>

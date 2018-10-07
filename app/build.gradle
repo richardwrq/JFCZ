@@ -14,9 +14,30 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        release {
+            Properties properties = new Properties()
+            InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
+            properties.load( inputStream )
+
+            def sdkDir = properties.getProperty('key.file')
+
+            def key_keyAlias = properties.getProperty( 'keyAlias' )
+            def key_keyPassword = properties.getProperty( 'keyPassword' )
+            def key_storePassword = properties.getProperty( 'storePassword' )
+
+            storeFile file( sdkDir )
+            storePassword key_storePassword
+            keyAlias key_keyAlias
+            keyPassword key_keyPassword
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -39,6 +60,11 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
 
     implementation 'cn.yipianfengye.android:zxing-library:2.2'
+
+    //umeng
+    implementation 'com.umeng.sdk:common:1.5.3'
+    implementation 'com.umeng.sdk:utdid:1.1.5.3'
+    implementation 'com.umeng.sdk:push:4.2.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
