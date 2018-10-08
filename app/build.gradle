@@ -13,6 +13,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "API_KEY", "\"29eab73752ed7ae56b95f329ae925508\""
     }
 
     signingConfigs {
@@ -35,12 +37,24 @@ android {
     }
 
     buildTypes {
+
+        debug {
+            buildConfigField "String", "BASE_URL", "\"http://sale.jqit020.com\""
+        }
+
         release {
             minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            buildConfigField "String", "BASE_URL", "\"http://sale.jqit020.com\""
         }
     }
+}
+
+
+task asd dependsOn ("install") {
+
 }
 
 dependencies {

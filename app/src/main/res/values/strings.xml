@@ -8,4 +8,6 @@
 
     <string name="pls_choose_gift">请先选择一个礼品</string>
     <string name="loading_data">正在请求数据，请稍后...</string>
+    
+    <string name="network_invalid">网络异常，请联系管理员</string>
 </resources>

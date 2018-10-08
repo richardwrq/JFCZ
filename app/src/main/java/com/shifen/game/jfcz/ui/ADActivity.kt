@@ -6,13 +6,18 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v4.content.LocalBroadcastManager
+import android.util.Log
 import android.view.View
+import android.widget.Toast
+import com.shifen.game.jfcz.BuildConfig
 import com.shifen.game.jfcz.R
-import com.shifen.game.jfcz.utils.BANNER_LIST
-import com.shifen.game.jfcz.utils.GlideImageLoader
-import com.shifen.game.jfcz.utils.getConfig
+import com.shifen.game.jfcz.services.LoginService
+import com.shifen.game.jfcz.services.ServiceManager
+import com.shifen.game.jfcz.services.observeOnMain
+import com.shifen.game.jfcz.utils.*
 import com.youth.banner.BannerConfig
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 class ADActivity : BaseActivity() {
 
@@ -33,6 +38,15 @@ class ADActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         init()
+
+        val random = Random()
+        val num = random.nextInt(999999)
+        val imei = getIMEI(this)
+        val md5 = "deviceNum=$imei&random=$num&apiKey=${BuildConfig.API_KEY}".md5()
+        Log.d("JFCZApplication", "num: $num, imei: $imei, md5: $md5")
+        ServiceManager.create(LoginService::class.java).login(imei, num, md5).observeOnMain(onNext = {
+            Toast.makeText(this, "result ${it.data.token}", Toast.LENGTH_SHORT).show()
+        })
     }
 
     private fun init() {

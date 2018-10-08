@@ -33,6 +33,11 @@
             android:name=".ui.PayActivity"
             android:launchMode="singleTop" />
 
+        <activity
+            android:theme="@style/ErrorDialog"
+            android:name=".ui.ErrorDialog"
+            android:launchMode="singleInstance" />
+
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="5bb8142fb465f51bc800030e"/>

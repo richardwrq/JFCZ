@@ -2,6 +2,7 @@ package com.shifen.game.jfcz.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import java.lang.StringBuilder
 
 /**
  * 响应结果
@@ -13,6 +14,15 @@ import android.os.Parcelable
  * @constructor
  */
 data class Response<T>(val code: Int, val data: T, val message: String, val version: String)
+
+/**
+ * 登录成功返回结果
+ * @property timeout Long 有效期
+ * @property containerId String 货柜id
+ * @property token String
+ * @constructor
+ */
+data class LoginResult(val timeout: Long, val containerId: String, val token: String)
 
 data class Gift(val name: String, val containerNumber: Int, val imageUrl: String, val price: Float, val challengePrice: Float) : Parcelable {
 

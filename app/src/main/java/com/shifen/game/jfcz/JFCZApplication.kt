@@ -4,7 +4,6 @@ import android.app.Application
 import android.util.Log
 import com.shifen.game.jfcz.model.MyUmengMessageHandler
 import com.umeng.commonsdk.UMConfigure
-import com.umeng.message.IUmengCallback
 import com.umeng.message.IUmengRegisterCallback
 import com.umeng.message.MsgConstant
 import com.umeng.message.PushAgent

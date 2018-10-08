@@ -107,8 +107,8 @@
 
     <Button
         android:id="@+id/btnBuy"
-        android:layout_width="142.7dp"
-        android:layout_height="45.3dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@+id/rvGiftList"
         app:layout_constraintTop_toBottomOf="@+id/tvChallengePrice"
         app:layout_constraintEnd_toStartOf="@+id/btnChallenge"
@@ -121,8 +121,8 @@
 
     <Button
         android:id="@+id/btnChallenge"
-        android:layout_width="142.7dp"
-        android:layout_height="45.3dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="26dp"
         app:layout_constraintStart_toEndOf="@+id/btnBuy"
         app:layout_constraintTop_toTopOf="@+id/btnBuy"

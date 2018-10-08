@@ -27,8 +27,8 @@
 
     <Button
         android:id="@+id/btnGrabGift"
-        android:layout_width="200dp"
-        android:layout_height="63.3dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="@drawable/bg_btn_grab_gift"
         android:elevation="14dp"

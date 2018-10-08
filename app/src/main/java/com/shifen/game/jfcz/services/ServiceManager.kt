@@ -19,6 +19,14 @@ object ServiceManager {
         builder.connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
+                .addInterceptor {
+                    val originalRequest = it.request()
+                    val requestBuilder = originalRequest.newBuilder()
+                            .addHeader("Content-Type", "application/json; charset=utf-8")
+
+                    val request = requestBuilder.build()
+                    return@addInterceptor it.proceed(request)
+                }
 
         retrofit = Retrofit.Builder().client(builder.build())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

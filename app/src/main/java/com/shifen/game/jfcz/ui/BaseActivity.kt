@@ -15,7 +15,15 @@ import android.view.View
  */
 open class BaseActivity : AppCompatActivity() {
 
-    private var countDownTimer = createCountDownTimer()
+    private var countDownTimer = object : CountDownTimer(60 * 1000L, 1000L) {
+        override fun onFinish() {
+            onNoOperation()
+        }
+
+        override fun onTick(millisUntilFinished: Long) {
+            //do nothing
+        }
+    }
 
     override fun onAttachedToWindow() {
         hideBottomUIMenu()
@@ -46,24 +54,11 @@ open class BaseActivity : AppCompatActivity() {
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         when (ev.actionMasked) {
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                countDownTimer.cancel()
-                countDownTimer = createCountDownTimer()
                 countDownTimer.start()
             }
 
         }
         return super.dispatchTouchEvent(ev)
-    }
-
-    private fun createCountDownTimer(): CountDownTimer {
-        return object : CountDownTimer(60 * 1000L, 60 * 1000L) {
-            override fun onFinish() {
-                onNoOperation()
-            }
-
-            override fun onTick(p0: Long) {
-            }
-        }
     }
 
     /**
