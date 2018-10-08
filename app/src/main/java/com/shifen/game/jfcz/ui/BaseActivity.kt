@@ -1,8 +1,10 @@
 package com.shifen.game.jfcz.ui
 
 import android.os.Build
+import android.os.CountDownTimer
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
 
 /**
@@ -12,6 +14,8 @@ import android.view.View
  * @description:
  */
 open class BaseActivity : AppCompatActivity() {
+
+    private var countDownTimer = createCountDownTimer()
 
     override fun onAttachedToWindow() {
         hideBottomUIMenu()
@@ -37,5 +41,35 @@ open class BaseActivity : AppCompatActivity() {
             KeyEvent.KEYCODE_BACK, KeyEvent.KEYCODE_HOME, KeyEvent.KEYCODE_MENU -> return true
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        when (ev.actionMasked) {
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                countDownTimer.cancel()
+                countDownTimer = createCountDownTimer()
+                countDownTimer.start()
+            }
+
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
+    private fun createCountDownTimer(): CountDownTimer {
+        return object : CountDownTimer(60 * 1000L, 60 * 1000L) {
+            override fun onFinish() {
+                onNoOperation()
+            }
+
+            override fun onTick(p0: Long) {
+            }
+        }
+    }
+
+    /**
+     * 一定时间内无操作
+     */
+    open fun onNoOperation() {
+
     }
 }
