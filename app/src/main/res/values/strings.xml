@@ -10,4 +10,5 @@
     <string name="loading_data">正在请求数据，请稍后...</string>
     
     <string name="network_invalid">网络异常，请联系管理员</string>
+    <string name="login_error">登录异常，请联系管理员</string>
 </resources>

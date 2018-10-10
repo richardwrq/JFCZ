@@ -16,6 +16,7 @@ class GiftListAdapter : BaseAdapter<Gift, BaseViewHolder>() {
 
     override fun onBindViewHolder(p0: BaseViewHolder, p1: Int) {
         super.onBindViewHolder(p0, p1)
-        (p0.itemView as Button).text = list[p1].containerNumber.toString()
+        (p0.itemView as Button).text = list[p1].goodsList[0].id.toString()
+        p0.itemView.isEnabled = list[p1].status != 2
     }
 }

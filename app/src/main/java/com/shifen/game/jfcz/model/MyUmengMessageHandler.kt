@@ -5,7 +5,6 @@ import android.content.Intent
 import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
 import com.shifen.game.jfcz.ui.ADActivity
-import com.shifen.game.jfcz.utils.BANNER_LIST
 import com.shifen.game.jfcz.utils.putConfig
 import com.umeng.message.UmengMessageHandler
 import com.umeng.message.entity.UMessage
@@ -33,7 +32,7 @@ class MyUmengMessageHandler : UmengMessageHandler() {
         p0.putConfig {
             val images = p1.extra["images"]
             if (!images.isNullOrBlank()) {
-                it.putString(BANNER_LIST, images)
+//                it.putString(BANNER_LIST, images)
                 LocalBroadcastManager.getInstance(p0).sendBroadcast(Intent(ADActivity.ACTION_REFRESH_BANNER))
             }
         }

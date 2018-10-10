@@ -3,6 +3,10 @@ package com.shifen.game.jfcz
 import android.app.Application
 import android.util.Log
 import com.shifen.game.jfcz.model.MyUmengMessageHandler
+import com.shifen.game.jfcz.utils.APP_TOKEN
+import com.shifen.game.jfcz.utils.ApiConfig
+import com.shifen.game.jfcz.utils.CONTAINER_ID
+import com.shifen.game.jfcz.utils.getConfig
 import com.umeng.commonsdk.UMConfigure
 import com.umeng.message.IUmengRegisterCallback
 import com.umeng.message.MsgConstant
@@ -19,6 +23,9 @@ class JFCZApplication : Application() {
         super.onCreate()
         INSTANCE = this
         initUM()
+
+        ApiConfig.token = getConfig().getString(APP_TOKEN, "")!!
+        ApiConfig.containerId = getConfig().getString(CONTAINER_ID, "")!!
     }
 
     private fun initUM() {

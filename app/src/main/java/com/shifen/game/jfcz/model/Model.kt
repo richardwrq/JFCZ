@@ -2,7 +2,6 @@ package com.shifen.game.jfcz.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import java.lang.StringBuilder
 
 /**
  * 响应结果
@@ -24,24 +23,151 @@ data class Response<T>(val code: Int, val data: T, val message: String, val vers
  */
 data class LoginResult(val timeout: Long, val containerId: String, val token: String)
 
-data class Gift(val name: String, val containerNumber: Int, val imageUrl: String, val price: Float, val challengePrice: Float) : Parcelable {
+/**
+ *
+ * @property id Long
+ * @property containerId String
+ * @property url String
+ * @property type Int
+ * @property selected Int
+ * @property sort Int
+ * @property createTime String
+ * @property updateTime String
+ * @constructor
+ */
+data class Banner(val id: Long,
+                  val containerId: String,
+                  val url: String,
+                  val type: Int,
+                  val selected: Int,
+                  val sort: Int,
+                  val createTime: String,
+                  val updateTime: String)
 
+/**
+ *
+ * @property id Long
+ * @property containerId String
+ * @property gridId String
+ * @property goodsId String
+ * @property position Int
+ * @property gamePrice String
+ * @property price String
+ * @property description String
+ * @property pictureUrl String
+ * @property count Int
+ * @property sort Int
+ * @property createTime String
+ * @property updateTime String
+ * @constructor
+ */
+data class Goods(val id: Long,
+                 val containerId: String,
+                 val gridId: String,
+                 val goodsId: String,
+                 val position: Int,
+                 val gamePrice: String,
+                 val price: String,
+                 val description: String,
+                 val pictureUrl: String,
+                 val count: Int,
+                 val sort: Int,
+                 val createTime: String,
+                 val updateTime: String) : Parcelable {
     constructor(source: Parcel) : this(
+            source.readLong(),
+            source.readString(),
+            source.readString(),
             source.readString(),
             source.readInt(),
             source.readString(),
-            source.readFloat(),
-            source.readFloat()
+            source.readString(),
+            source.readString(),
+            source.readString(),
+            source.readInt(),
+            source.readInt(),
+            source.readString(),
+            source.readString()
     )
 
     override fun describeContents() = 0
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeString(name)
-        writeInt(containerNumber)
-        writeString(imageUrl)
-        writeFloat(price)
-        writeFloat(challengePrice)
+        writeLong(id)
+        writeString(containerId)
+        writeString(gridId)
+        writeString(goodsId)
+        writeInt(position)
+        writeString(gamePrice)
+        writeString(price)
+        writeString(description)
+        writeString(pictureUrl)
+        writeInt(count)
+        writeInt(sort)
+        writeString(createTime)
+        writeString(updateTime)
+    }
+
+    companion object {
+        @JvmField
+        val CREATOR: Parcelable.Creator<Goods> = object : Parcelable.Creator<Goods> {
+            override fun createFromParcel(source: Parcel): Goods = Goods(source)
+            override fun newArray(size: Int): Array<Goods?> = arrayOfNulls(size)
+        }
+    }
+}
+
+/**
+ *
+ * @property id Long
+ * @property containerId String
+ * @property gridId String
+ * @property number Long
+ * @property description String
+ * @property status Int
+ * @property sort Int
+ * @property createTime String
+ * @property updateTime String
+ * @property goodsList MutableList<Goods>
+ * @constructor
+ */
+data class Gift(val id: Long,
+                val containerId: String,
+                val gridId: String,
+                val number: Long,
+                val description: String,
+                val status: Int,
+                val sort: Int,
+                val createTime: String,
+                val updateTime: String,
+                val goodsList: MutableList<Goods>) : Parcelable {
+
+    constructor(source: Parcel) : this(
+            source.readLong(),
+            source.readString(),
+            source.readString(),
+            source.readLong(),
+            source.readString(),
+            source.readInt(),
+            source.readInt(),
+            source.readString(),
+            source.readString(),
+            ArrayList<Goods>().apply { source.readList(this, Goods::class.java.classLoader) }
+    )
+
+    override fun describeContents() = 0
+
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeLong(id)
+        writeString(containerId)
+        writeString(gridId)
+        writeLong(number)
+        writeString(description)
+        writeInt(status)
+        writeInt(sort)
+        writeString(createTime)
+        writeString(updateTime)
+        writeList(goodsList)
     }
 
     companion object {
@@ -52,3 +178,11 @@ data class Gift(val name: String, val containerNumber: Int, val imageUrl: String
         }
     }
 }
+
+/**
+ *
+ * @property userId String
+ * @property gameSessionId String
+ * @constructor
+ */
+data class OrderStatus(val userId: String, val gameSessionId: String)

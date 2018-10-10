@@ -2,4 +2,8 @@
 <resources>
     <dimen name="ad_banner_width">1073dp</dimen>
     <dimen name="ad_banner_height">713dp</dimen>
+
+    <dimen name="qrcode_width">220dp</dimen>
+    <dimen name="qrcode_height">220dp</dimen>
+
 </resources>

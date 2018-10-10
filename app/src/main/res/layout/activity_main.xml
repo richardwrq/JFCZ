@@ -20,10 +20,11 @@
         app:image_scale_type="fit_xy"
         app:indicator_drawable_selected="@drawable/ad_indicator_selected"
         app:indicator_drawable_unselected="@drawable/ad_indicator_un_select"
-        app:indicator_height="20.7dp"
+        app:indicator_height="20dp"
         app:indicator_margin="13.3dp"
         app:indicator_width="20dp"
-        app:scroll_time="3000" />
+        app:scroll_time="3000"
+        app:banner_default_image="@android:color/transparent"/>
 
     <Button
         android:id="@+id/btnGrabGift"

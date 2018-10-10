@@ -29,6 +29,11 @@ abstract class BaseAdapter<T, VH : BaseViewHolder> : RecyclerView.Adapter<VH>() 
         return removed
     }
 
+    fun setItems(list: List<T>) {
+        this.list.clear()
+        addItems(list)
+    }
+
     fun removeItemWithIndex(index: Int): T {
         val removed = list.removeAt(index)
         notifyDataSetChanged()
