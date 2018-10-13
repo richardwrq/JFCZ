@@ -1,5 +1,9 @@
 package com.shifen.game.jfcz.ui
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
@@ -12,21 +16,25 @@ import android.widget.TextView
 import com.shifen.game.jfcz.R
 import kotlinx.android.synthetic.main.activity_game.*
 
+
 class GameActivity : BaseActivity() {
     private val COUNT_DOWN_SECONDS = 30
     private val COUNT_DOWN_SECONDS_FAILURE = 10
     private var curRoundIndex = -1
-    private var waitKnifeNum = 7
+    private var waitKnifeNum = 10
     private var waitKnifeViews = ArrayList<ImageView>()
 
     private val animation = TranslateAnimation(0f, 0f, 0f, -200f)
-//    private val animation1 = TranslateAnimation(0f, 600f, 0f, 200f)
-//    private val animation2 = TranslateAnimation(0f, -600f, 0f, 200f)
+    private val ivFruits1AnimatorSet = AnimatorSet()
+    private val ivFruits2AnimatorSet = AnimatorSet()
 
-    private val starAnimationSet = AnimationSet(true)
+    private val ivStar1AnimationSet = AnimationSet(false)
+    private val ivStar2AnimationSet = AnimationSet(false)
     private lateinit var roundViews: Array<TextView>
     private var centerBitmapIds = arrayOf(R.mipmap.ic_watermelon, R.mipmap.ic_orange, R.mipmap.ic_peach)
     private var roundIndexIds = arrayOf(R.mipmap.ic_round_1, R.mipmap.ic_round_2, R.mipmap.ic_round_3)
+    private var fruits1IndexIds = arrayOf(R.mipmap.ic_watermelon_1, R.mipmap.ic_orange_1, R.mipmap.ic_peach_1)
+    private var fruits2IndexIds = arrayOf(R.mipmap.ic_watermelon_2, R.mipmap.ic_orange_2, R.mipmap.ic_peach_2)
     private var isFailure = false
 
     private var countDownSeconds = COUNT_DOWN_SECONDS
@@ -41,6 +49,16 @@ class GameActivity : BaseActivity() {
         animation1.duration = 300
         animation2.duration = 300
         animation2.startOffset = 300
+        ivStar1AnimationSet.addAnimation(animation1)
+        ivStar1AnimationSet.addAnimation(animation2)
+        val animation3 = AlphaAnimation(0f, 1f)
+        val animation4 = AlphaAnimation(1f, 0f)
+        animation3.duration = 300
+        animation4.duration = 300
+        animation4.startOffset = 300
+        ivStar2AnimationSet.addAnimation(animation3)
+        ivStar2AnimationSet.addAnimation(animation4)
+
         animation.duration = 50
         animation.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationRepeat(p0: Animation?) {
@@ -55,27 +73,18 @@ class GameActivity : BaseActivity() {
                 if (isFailure) {
                     updateGameResultView(false)
                 } else {
-                    ivStar1.visibility = View.VISIBLE
-                    ivStar1.startAnimation(starAnimationSet)
+                    ivStar1.startAnimation(ivStar1AnimationSet)
                     game.postDelayed({
-                        ivStar2.visibility = View.VISIBLE
-                        ivStar2.startAnimation(starAnimationSet)
-                    }, 100)
-                    game.postDelayed({
-                        ivStar1.visibility = View.INVISIBLE
-                    }, 600)
-                    game.postDelayed({
-                        ivStar2.visibility = View.INVISIBLE
-                    }, 700)
-
+                        ivStar2.startAnimation(ivStar2AnimationSet)
+                    }, 200)
 
                     if (waitKnifeNum == 0) {
                         // 通过当前小关
-//                        animation1.duration = 1500
-//                        animation2.duration = 1500
-//                        ivFruits1.startAnimation(animation1)
-//                        ivFruits2.startAnimation(animation2)
-                        nextRound()
+                        game.visibility = View.GONE
+                        ivFruits1.visibility = View.VISIBLE
+                        ivFruits2.visibility = View.VISIBLE
+                        ivFruits1AnimatorSet.start()
+                        ivFruits2AnimatorSet.start()
                     }
                 }
             }
@@ -83,17 +92,69 @@ class GameActivity : BaseActivity() {
             override fun onAnimationStart(p0: Animation?) {
             }
         })
+
+        ivFruits1AnimatorSet.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(p0: Animator?) {
+            }
+
+            override fun onAnimationEnd(p0: Animator?) {
+                game.visibility = View.VISIBLE
+                ivFruits1.visibility = View.GONE
+                ivFruits2.visibility = View.GONE
+                nextRound()
+            }
+
+            override fun onAnimationCancel(p0: Animator?) {
+            }
+
+            override fun onAnimationStart(p0: Animator?) {
+            }
+
+        })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+        val animator1 = ObjectAnimator.ofFloat(ivFruits1, "translationX", 0f, 200f)
+        val duration = 800L
+        animator1.duration = duration
+        val animator2 = ObjectAnimator.ofFloat(ivFruits1, "translationY", 0f, 800f)
+        animator2.duration = duration
+        val animator3 = ObjectAnimator.ofFloat(ivFruits1, "rotation", 0f, -90f)
+        animator3.duration = duration
+        val animator7 = ObjectAnimator.ofFloat(ivFruits1, "rotation", -90f, -160f)
+        animator7.duration = duration
+
+        ivFruits1AnimatorSet.play(animator1).with(animator3).before(animator2)
+        ivFruits1AnimatorSet.play(animator2).with(animator7)
+
+        val animator4 = ObjectAnimator.ofFloat(ivFruits2, "translationX", 0f, -200f)
+        animator4.duration = duration
+        val animator5 = ObjectAnimator.ofFloat(ivFruits2, "translationY", 0f, 800f)
+        animator5.duration = duration
+        val animator6 = ObjectAnimator.ofFloat(ivFruits2, "rotation", 0f, -90f)
+        animator6.duration = duration
+        val animator8 = ObjectAnimator.ofFloat(ivFruits2, "rotation", -90f, -160f)
+        animator8.duration = duration
+
+        ivFruits2AnimatorSet.play(animator4).with(animator6).before(animator5)
+        ivFruits2AnimatorSet.play(animator5).with(animator8)
         roundViews = arrayOf(tvRound1, tvRound2, tvRound3)
         // 等待的小刀
+        if (waitKnifeNum > 10) {
+            ltWaitKnife2Group.visibility = View.VISIBLE
+        } else {
+            ltWaitKnife2Group.visibility = View.GONE
+        }
         for (i in 1..waitKnifeNum) {
             val ivWaitKnife = ImageView(this)
             ivWaitKnife.setImageResource(R.mipmap.ic_knife_wait)
-            ltWaitKnife.addView(ivWaitKnife)
+            if (i > 10) {
+                ltWaitKnife2.addView(ivWaitKnife)
+            } else {
+                ltWaitKnife.addView(ivWaitKnife)
+            }
             waitKnifeViews.add(ivWaitKnife)
         }
 
@@ -106,7 +167,7 @@ class GameActivity : BaseActivity() {
         }
 
         btnGameFinish.setOnClickListener {
-
+            startGameNow()
         }
 
         nextRound()
@@ -133,6 +194,8 @@ class GameActivity : BaseActivity() {
         ltGame.visibility = View.GONE
         ltResult.visibility = View.GONE
         ivRoundIndex.setImageResource(roundIndexIds[curRoundIndex])
+        ivFruits1.setImageResource(fruits1IndexIds[curRoundIndex])
+        ivFruits2.setImageResource(fruits2IndexIds[curRoundIndex])
 
         waitKnifeNum = waitKnifeViews.size
         waitKnifeViews.forEach {
@@ -204,7 +267,8 @@ class GameActivity : BaseActivity() {
     }
 
     private fun startGameNow() {
-
+        startActivity(Intent(this, GiftListActivity::class.java))
+        finish()
     }
 
     private fun createCountDownTimer(): CountDownTimer {
