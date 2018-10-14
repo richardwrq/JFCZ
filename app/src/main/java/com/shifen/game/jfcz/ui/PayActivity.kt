@@ -94,7 +94,7 @@ class PayActivity : BaseActivity() {
                                 } else if (type == GAME) {
                                     startActivity(Intent(this, GameActivity::class.java).apply {
                                         putExtra(GameActivity.KEY_GIRD_ID, goods.gridId)
-                                        putExtra(GameActivity.KEY_GOODS_ID, goods.goodsId.toInt())
+                                        putExtra(GameActivity.KEY_GOODS_ID, goods.goodsId)
                                         putExtra(GameActivity.KEY_USER_ID, res.data.userId)
                                         putExtra(GameActivity.KEY_SESSION_ID, res.data.gameSessionId)
                                         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
