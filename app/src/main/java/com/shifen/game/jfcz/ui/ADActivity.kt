@@ -69,7 +69,8 @@ class ADActivity : BaseActivity() {
     }
 
     fun gotoGiftList(view: View) {
-        startActivity(Intent(this, GameActivity::class.java))
+        startActivity(Intent(this, PaySuccessDialog
+        ::class.java))
     }
 
 }

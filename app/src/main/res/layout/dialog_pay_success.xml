@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="460dp"
+    android:layout_height="472dp">
+
+    <View
+        android:id="@+id/vPaySuccess"
+        android:layout_width="460dp"
+        android:layout_height="376.6dp"
+        android:background="@mipmap/bg_pay_success"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnFinish"/>
+    
+    <ImageView
+        android:id="@+id/ivGift"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:scaleType="fitXY"
+        android:layout_marginTop="122.67dp"
+        app:layout_constraintStart_toStartOf="@id/vPaySuccess"
+        app:layout_constraintTop_toTopOf="@id/vPaySuccess"
+        app:layout_constraintEnd_toEndOf="@id/vPaySuccess"
+        app:layout_constraintBottom_toTopOf="@id/tvGiftName"
+        android:src="@color/colorPrimary"/>
+
+    <TextView
+        android:id="@+id/tvGiftName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:textColor="#717171"
+        android:textSize="21.3dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivGift"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tvOrderNumber"
+        android:text="恭喜您获得Kitty一个"/>
+
+    <TextView
+        android:id="@+id/tvOrderNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textColor="#717171"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvGiftName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/vPaySuccess"
+        android:text="订单编号888888888888888"/>
+    
+    <Button
+        android:id="@+id/btnFinish"
+        android:layout_width="149.3dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="47.3dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/vPaySuccess"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@mipmap/bg_btn_finish"/>
+    
+</android.support.constraint.ConstraintLayout>

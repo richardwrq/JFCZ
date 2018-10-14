@@ -34,8 +34,13 @@
             android:launchMode="singleTop" />
 
         <activity
-            android:theme="@style/ErrorDialog"
+            android:theme="@style/ActivityDialog"
             android:name=".ui.ErrorDialog"
+            android:launchMode="singleInstance" />
+
+        <activity
+            android:theme="@style/ActivityDialog"
+            android:name=".ui.PaySuccessDialog"
             android:launchMode="singleInstance" />
 
         <meta-data

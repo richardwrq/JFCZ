@@ -140,3 +140,21 @@ interface PayService {
     @GET("/sale/pay-order/status")
     fun payOrderStatus(): Observable<Response<OrderStatus>>
 }
+
+interface PushService {
+
+    @GET("/push/device/bind")
+    fun bind(@Query("deviceId") deviceId: String, @Query("deviceToken") deviceToken: String): Observable<Response<String>>
+}
+
+interface GoodsService {
+
+    @GET("/sale/game-pass/update/goods-lib")
+    fun updateGoods(@Query("gridId") gridId: String, @Query("goodsId") goodsId: String): Observable<Response<String>>
+}
+
+interface ConfigService {
+
+    @GET("/sale/config")
+    fun getConfig(): Observable<Response<Config>>
+}

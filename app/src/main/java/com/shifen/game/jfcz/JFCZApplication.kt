@@ -3,14 +3,15 @@ package com.shifen.game.jfcz
 import android.app.Application
 import android.util.Log
 import com.shifen.game.jfcz.model.MyUmengMessageHandler
-import com.shifen.game.jfcz.utils.APP_TOKEN
-import com.shifen.game.jfcz.utils.ApiConfig
-import com.shifen.game.jfcz.utils.CONTAINER_ID
-import com.shifen.game.jfcz.utils.getConfig
+import com.shifen.game.jfcz.services.PushService
+import com.shifen.game.jfcz.services.ServiceManager
+import com.shifen.game.jfcz.utils.*
 import com.umeng.commonsdk.UMConfigure
 import com.umeng.message.IUmengRegisterCallback
 import com.umeng.message.MsgConstant
 import com.umeng.message.PushAgent
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
 
 class JFCZApplication : Application() {
@@ -18,6 +19,9 @@ class JFCZApplication : Application() {
     companion object {
         lateinit var INSTANCE: JFCZApplication
     }
+
+    val DEVICE_ID by lazy { getIMEI(this) }
+    val compositeDisposable = CompositeDisposable()
 
     override fun onCreate() {
         super.onCreate()
@@ -46,6 +50,9 @@ class JFCZApplication : Application() {
         mPushAgent.register(object : IUmengRegisterCallback {
             override fun onSuccess(p0: String) {
                 Log.d("JFCZApplication", "um register success! $p0")
+                compositeDisposable.add(ServiceManager.create(PushService::class.java).bind(DEVICE_ID, p0)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe { Log.i("JFCZApplication", "bind result: ${it.data}") })
             }
 
             override fun onFailure(p0: String, p1: String) {

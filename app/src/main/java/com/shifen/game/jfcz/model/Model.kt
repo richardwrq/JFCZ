@@ -186,3 +186,21 @@ data class Gift(val id: Long,
  * @constructor
  */
 data class OrderStatus(val userId: String, val gameSessionId: String)
+
+/**
+ *
+ * @property id Long
+ * @property containerId String
+ * @property gridLineNumber Int
+ * @property musicType Int
+ * @property musicUrl String
+ * @property url String
+ * @property gridVersion String
+ * @property goodsVersion String
+ * @property createTime String
+ * @property updateTime String
+ * @constructor
+ */
+data class Config(val id: Long, val containerId: String, val gridLineNumber: Int, val musicType: Int,
+                  val musicUrl: String, val url: String, val gridVersion: String, val goodsVersion: String,
+                  val createTime: String, val updateTime: String)
