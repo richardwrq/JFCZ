@@ -52,10 +52,12 @@ class GameActivity : BaseActivity() {
     private var countDownTimerFailure: CountDownTimer? = null
 
     // intent
-    public val KEY_GIRD_ID = "KEY_GIRD_ID"
-    public val KEY_USER_ID = "KEY_USER_ID"
-    public val KEY_GOODS_ID = "KEY_GOODS_ID"
-    public val KEY_SESSION_ID = "KEY_SESSION_ID"
+    companion object {
+        val KEY_GIRD_ID = "KEY_GIRD_ID"
+        val KEY_USER_ID = "KEY_USER_ID"
+        val KEY_GOODS_ID = "KEY_GOODS_ID"
+        val KEY_SESSION_ID = "KEY_SESSION_ID"
+    }
 
     private var mGirdId = ""
     private var mUserId = ""

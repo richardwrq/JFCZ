@@ -7,9 +7,7 @@ import com.shifen.game.jfcz.JFCZApplication
 import com.shifen.game.jfcz.R
 import com.shifen.game.jfcz.model.*
 import com.shifen.game.jfcz.ui.ErrorDialog
-import com.shifen.game.jfcz.utils.TOKEN_TIMEOUT
-import com.shifen.game.jfcz.utils.getConfig
-import com.shifen.game.jfcz.utils.isNetworkAvailable
+import com.shifen.game.jfcz.utils.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
@@ -17,18 +15,32 @@ import io.reactivex.schedulers.Schedulers
 import okhttp3.RequestBody
 import retrofit2.http.*
 
-
 fun <T> Observable<Response<T>>.observeOnMain(observerAdapter: ObserverAdapter<Response<T>>) {
-    if (JFCZApplication.INSTANCE.getConfig().getLong(TOKEN_TIMEOUT, 0L) - System.currentTimeMillis() <= 24 * 60 * 60 * 1000L) {
+
+    wrapLogin().observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .unsubscribeOn(Schedulers.io())
+            .subscribe(observerAdapter)
+}
+
+fun <T> Observable<Response<T>>.wrapLogin(): Observable<Response<T>> {
+    if (JFCZApplication.INSTANCE.getConfig().getLong(TOKEN_TIMEOUT, 0L) - System.currentTimeMillis() / 1000 <= 24 * 60 * 60) {
+        Log.i("wrapLogin", "token过期，需要重新登录!")
         val loginServiceImpl = LoginServiceImpl()
         fun showErrorDialog() {
+            JFCZApplication.INSTANCE.putConfig {
+                it.remove(TOKEN_TIMEOUT)
+                it.remove(APP_TOKEN)
+                ApiConfig.containerId = ""
+                ApiConfig.token = ""
+            }
             val tips = JFCZApplication.INSTANCE.getString(R.string.login_error)
-            val intent = Intent(JFCZApplication.INSTANCE, ErrorDialog::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.putExtra(ErrorDialog.TIPS_KEY, tips)
-            JFCZApplication.INSTANCE.startActivity(intent)
+            JFCZApplication.INSTANCE.startActivity(Intent(JFCZApplication.INSTANCE, ErrorDialog::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                putExtra(ErrorDialog.TIPS_KEY, tips)
+            })
         }
-        loginServiceImpl.login(JFCZApplication.INSTANCE)
+        return loginServiceImpl.login(JFCZApplication.INSTANCE)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .doOnError {
@@ -51,13 +63,8 @@ fun <T> Observable<Response<T>>.observeOnMain(observerAdapter: ObserverAdapter<R
                         showErrorDialog()
                     }
                 }
-                .subscribe(observerAdapter)
-    } else {
-        observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(observerAdapter)
     }
+    return this
 }
 
 fun <T> Observable<Response<T>>.observeOnMain(onCompile: (() -> Unit)? = null, onError: ((Throwable) -> Unit)? = null, onNext: ((Response<T>) -> Unit)? = null) {
@@ -92,10 +99,10 @@ abstract class ObserverAdapter<T> : DisposableObserver<T>() {
     override fun onStart() {
         if (!isNetworkAvailable(JFCZApplication.INSTANCE)) {
             val tips = JFCZApplication.INSTANCE.getString(R.string.network_invalid)
-            val intent = Intent(JFCZApplication.INSTANCE, ErrorDialog::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.putExtra(ErrorDialog.TIPS_KEY, tips)
-            JFCZApplication.INSTANCE.startActivity(intent)
+            JFCZApplication.INSTANCE.startActivity(Intent(JFCZApplication.INSTANCE, ErrorDialog::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                putExtra(ErrorDialog.TIPS_KEY, tips)
+            })
             dispose()
             return
         }
@@ -138,14 +145,14 @@ interface GiftService {
 
 interface PayService {
 
-    @GET("/sale/pay-order/status")
-    fun payOrderStatus(): Observable<Response<OrderStatus>>
+    @POST("/sale/pay-order/status")
+    fun payOrderStatus(@Body requestBody: RequestBody): Observable<Response<OrderStatus>>
 }
 
 interface PushService {
 
-    @GET("/push/device/bind")
-    fun bind(@Query("deviceId") deviceId: String, @Query("deviceToken") deviceToken: String): Observable<Response<String>>
+    @POST("/push/device/bind?apiKey=${BuildConfig.API_KEY}")
+    fun bind(@Body requestBody: RequestBody): Observable<Response<String>>
 }
 
 interface GoodsService {

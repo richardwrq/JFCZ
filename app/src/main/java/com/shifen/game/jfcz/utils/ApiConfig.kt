@@ -2,6 +2,7 @@ package com.shifen.game.jfcz.utils
 
 import android.graphics.Bitmap
 import com.shifen.game.jfcz.BuildConfig
+import com.shifen.game.jfcz.model.Config
 import com.uuzuche.lib_zxing.activity.CodeUtils
 
 object ApiConfig {
@@ -13,6 +14,8 @@ object ApiConfig {
     var token = ""
 
     var containerId = ""
+
+    var config: Config? = null
 
     fun generateQRCode(goodsId: Long, type: Int, w: Int, h: Int): Bitmap {
         val timestamp = System.currentTimeMillis() / 1000

@@ -4,13 +4,18 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
-import com.shifen.game.jfcz.services.ServiceManager
+import com.shifen.game.jfcz.ConfigManager
+import com.shifen.game.jfcz.services.*
 import com.shifen.game.jfcz.ui.ADActivity
 import com.shifen.game.jfcz.utils.*
 import com.umeng.message.UmengMessageHandler
 import com.umeng.message.entity.UMessage
+import io.reactivex.observers.DisposableObserver
+import io.reactivex.schedulers.Schedulers
 
 class MyUmengMessageHandler : UmengMessageHandler() {
+
+    private val tag = MyUmengMessageHandler::class.java.simpleName
 
     /**
      * 通知的回调方法（通知送达时会回调）
@@ -31,33 +36,57 @@ class MyUmengMessageHandler : UmengMessageHandler() {
         super.dealWithCustomMessage(p0, p1)
         Log.d("MyUmengMessageHandler", "receive custom message: ${p1.custom}")
         if (p1.extra["type"] == "1") {
-//            ServiceManager.create()
-        } else if (p1.extra["type"] == "2") {
+            ServiceManager.create(ConfigService::class.java)
+                    .getConfig()
+                    .wrapLogin()
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(object : DisposableObserver<Response<Config>>() {
 
+                        override fun onComplete() {
+
+                        }
+
+                        override fun onNext(t: Response<Config>) {
+                            if (t.code != 0) {
+                                Log.e(tag, "get config error: ${t.message}")
+                                return
+                            }
+                            if (p0.getConfig().getString(GAME_VERSION, "") != t.data.gameVersion) {
+                                ServiceManager.create(GameService::class.java)
+                                        .getGameConfig()
+                                        .observeOnMain {
+                                            ConfigManager.updateGameConfig(it.data)
+                                        }
+                            }
+                            if (p0.getConfig().getString(GOODS_VERSION, "") != t.data.goodsVersion) {
+                                ServiceManager.create(GiftService::class.java)
+                                        .getGiftList()
+                                        .observeOnMain {
+                                            ConfigManager.updateGiftList(it.data)
+                                        }
+                            }
+                            p0.putConfig {
+                                ApiConfig.containerId = t.data.containerId
+                                ApiConfig.config = t.data
+                                it.putString(CONTAINER_ID, t.data.containerId)
+                                it.putString(GAME_VERSION, t.data.gameVersion)
+                                it.putString(GRID_VERSION, t.data.gridVersion)
+                                it.putString(GOODS_VERSION, t.data.goodsVersion)
+                            }
+                        }
+
+                        override fun onError(e: Throwable) {
+                            e.printStackTrace()
+                        }
+                    })
+        } else if (p1.extra["type"] == "2") {
+            LocalBroadcastManager.getInstance(p0).sendBroadcast(Intent(ADActivity.ACTION_REFRESH_BANNER))
         }
-        p0.putConfig {
-            val containerId = p1.extra["containerId"]
-            val gameVersion = p1.extra["gameVersion"]
-            val gridVersion = p1.extra["gridVersion"]
-            val goodsVersion = p1.extra["goodsVersion"]
-            if (!containerId.isNullOrEmpty()) {
-                ApiConfig.containerId = containerId!!
-                it.putString(CONTAINER_ID, containerId)
-            }
-            if (!gameVersion.isNullOrEmpty()) {
-                it.putString(GAME_VERSION, gameVersion)
-            }
-            if (!gridVersion.isNullOrEmpty()) {
-                it.putString(GRID_VERSION, gridVersion)
-            }
-            if (!goodsVersion.isNullOrEmpty()) {
-                it.putString(GOODS_VERSION, goodsVersion)
-            }
+
 
 //            if (!images.isNullOrBlank()) {
 //                it.putString(BANNER_LIST, images)
 //                LocalBroadcastManager.getInstance(p0).sendBroadcast(Intent(ADActivity.ACTION_REFRESH_BANNER))
 //            }
-        }
     }
 }

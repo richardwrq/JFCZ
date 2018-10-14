@@ -202,7 +202,7 @@ data class OrderStatus(val userId: String, val gameSessionId: String)
  * @constructor
  */
 data class Config(val id: Long, val containerId: String, val gridLineNumber: Int, val musicType: Int,
-                  val musicUrl: String, val url: String, val gridVersion: String, val goodsVersion: String,
+                  val musicUrl: String, val url: String, val gridVersion: String, val goodsVersion: String, val gameVersion: String,
                   val createTime: String, val updateTime: String)
 
 
@@ -221,3 +221,18 @@ data class Config(val id: Long, val containerId: String, val gridLineNumber: Int
 data class GameConfig(val createTime: Long, val checkPointLevel: Int, val gameId: Int, val kineves: Int,
                       val leaveTime: Int, val rotate: Int, val speed: Int, val updateTime: Long)
 
+/**
+ *
+ * @property t Long
+ * @property transferId String
+ * @constructor
+ */
+data class OrderStatusRequestBody(val t: Long, val transferId: String)
+
+/**
+ *
+ * @property deviceId String
+ * @property deviceToken String
+ * @constructor
+ */
+data class PushBindRequestBody(val deviceId: String, val deviceToken: String)

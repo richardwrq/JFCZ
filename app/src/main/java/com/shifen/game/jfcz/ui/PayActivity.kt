@@ -4,11 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.shifen.game.jfcz.R
 import com.shifen.game.jfcz.model.Goods
-import com.shifen.game.jfcz.services.PayService
-import com.shifen.game.jfcz.services.ServiceManager
-import com.shifen.game.jfcz.services.observeOnMain
+import com.shifen.game.jfcz.model.OrderStatusRequestBody
+import com.shifen.game.jfcz.services.*
 import com.shifen.game.jfcz.utils.ApiConfig
 import com.shifen.game.jfcz.utils.GAME_SESSION_ID
 import com.shifen.game.jfcz.utils.USER_ID
@@ -16,8 +16,11 @@ import com.shifen.game.jfcz.utils.putConfig
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_pay.*
 import java.util.concurrent.TimeUnit
+import okhttp3.RequestBody
+
 
 class PayActivity : BaseActivity() {
 
@@ -32,6 +35,9 @@ class PayActivity : BaseActivity() {
     companion object {
         val GOODS_KEY = "GOODS_KEY"
         val BUY_TYPE = "buy_type"
+
+        val BUY = 0
+        val GAME = 1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,17 +63,45 @@ class PayActivity : BaseActivity() {
 
         disposables.add(Observable.interval(orderStatusInterval, orderStatusInterval, TimeUnit.SECONDS)
                 .subscribe {
-                    ServiceManager.create(PayService::class.java).payOrderStatus()
+                    val timestamp = System.currentTimeMillis() / 1000
+                    val transferId = ApiConfig.containerId + goods.gridId + goods.goodsId + timestamp
+                    val orderStatus = OrderStatusRequestBody(timestamp, transferId)
+                    val gson = Gson()
+                    val json = gson.toJson(orderStatus)
+                    val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
+
+                    ServiceManager.create(PayService::class.java).payOrderStatus(body)
                             .observeOnMain(onNext = { res ->
 
-                                putConfig { editor ->
-                                    editor.putString(USER_ID, res.data.userId)
-                                    editor.putString(GAME_SESSION_ID, res.data.gameSessionId)
+                                if (type == BUY) {
+                                    putConfig { editor ->
+                                        editor.putString(USER_ID, res.data.userId)
+                                        editor.putString(GAME_SESSION_ID, res.data.gameSessionId)
+                                    }
+                                    disposables.dispose()
+
+                                    startActivity(Intent(this, PaySuccessDialog::class.java).apply {
+                                        putExtra(GOODS_KEY, goods)
+                                        putExtra(PaySuccessDialog.SESSION_ID_KEY, res.data.gameSessionId)
+                                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                    })
+
+                                    ServiceManager.create(GoodsService::class.java).updateGoods(goods.gridId, goods.goodsId)
+                                            .wrapLogin()
+                                            .subscribeOn(Schedulers.io())
+                                            .subscribe { }
+                                    TODO("打开货柜，上报")
+                                } else if (type == GAME) {
+                                    startActivity(Intent(this, GameActivity::class.java).apply {
+                                        putExtra(GameActivity.KEY_GIRD_ID, goods.gridId)
+                                        putExtra(GameActivity.KEY_GOODS_ID, goods.goodsId.toInt())
+                                        putExtra(GameActivity.KEY_USER_ID, res.data.userId)
+                                        putExtra(GameActivity.KEY_SESSION_ID, res.data.gameSessionId)
+                                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                    })
                                 }
-                                disposables.dispose()
-                                TODO("打开货柜，上报")
                             }, onError = { t ->
-                               Toast.makeText(this, t.message, Toast.LENGTH_SHORT).show()
+                                t.printStackTrace()
                             })
                 })
 

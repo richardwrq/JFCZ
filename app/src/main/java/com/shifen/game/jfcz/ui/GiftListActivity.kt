@@ -6,6 +6,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.text.Html
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.shifen.game.jfcz.ConfigManager
 import com.shifen.game.jfcz.R
 import com.shifen.game.jfcz.model.Goods
 import com.shifen.game.jfcz.services.GiftService
@@ -50,7 +51,10 @@ class GiftListActivity : BaseActivity() {
                 Toast.makeText(this, getString(R.string.pls_choose_gift), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            startActivity(Intent(this, PayActivity::class.java).apply { putExtra(PayActivity.GOODS_KEY, currentGoods) })
+            startActivity(Intent(this, PayActivity::class.java).apply {
+                putExtra(PayActivity.GOODS_KEY, currentGoods)
+                putExtra(PayActivity.BUY_TYPE, PayActivity.BUY)
+            })
         }
 
         btnChallenge.setOnClickListener {
@@ -58,14 +62,26 @@ class GiftListActivity : BaseActivity() {
                 Toast.makeText(this, getString(R.string.pls_choose_gift), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            startActivity(Intent(this, GameActivity::class.java))
+
+            startActivity(Intent(this, PayActivity::class.java).apply {
+                putExtra(PayActivity.GOODS_KEY, currentGoods)
+                putExtra(PayActivity.BUY_TYPE, PayActivity.GAME)
+            })
         }
     }
 
     private fun questGiftList() {
+        val list = ConfigManager.getGiftList()
+        if (list.isNotEmpty()) {
+            adapter.setItems(list)
+            return
+        }
         ServiceManager.create(GiftService::class.java)
                 .getGiftList()
-                .observeOnMain { adapter.setItems(it.data) }
+                .observeOnMain {
+                    adapter.setItems(it.data)
+                    ConfigManager.updateGiftList(it.data)
+                }
     }
 
     override fun onNoOperation() {

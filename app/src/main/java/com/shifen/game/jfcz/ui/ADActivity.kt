@@ -5,13 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.os.SystemClock
 import android.support.v4.content.LocalBroadcastManager
-import android.view.View
+import com.shifen.game.jfcz.ConfigManager
 import com.shifen.game.jfcz.R
 import com.shifen.game.jfcz.model.Banner
-import com.shifen.game.jfcz.services.*
-import com.shifen.game.jfcz.utils.*
+import com.shifen.game.jfcz.services.BannerService
+import com.shifen.game.jfcz.services.ServiceManager
+import com.shifen.game.jfcz.services.observeOnMain
+import com.shifen.game.jfcz.utils.GlideImageLoader
 import com.youth.banner.BannerConfig
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -51,10 +52,17 @@ class ADActivity : BaseActivity() {
     }
 
     private fun questBannerList() {
+        val list = ConfigManager.getBannerList()
+        if (list.isNotEmpty()) {
+            bannerList = list
+            banner.update(bannerList.map { it.url })
+            return
+        }
         ServiceManager.create(BannerService::class.java)
                 .getBannerList()
-                .observeOnMain( onNext = { res ->
+                .observeOnMain(onNext = { res ->
                     bannerList = res.data
+                    ConfigManager.updateBannerList(bannerList)
                     if (res.data.isNotEmpty()) {
                         banner.update(res.data.map { it.url })
                     }
@@ -66,11 +74,6 @@ class ADActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(refreshBroadcastReceiver)
-    }
-
-    fun gotoGiftList(view: View) {
-        startActivity(Intent(this, PaySuccessDialog
-        ::class.java))
     }
 
 }

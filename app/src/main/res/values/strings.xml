@@ -11,4 +11,7 @@
     
     <string name="network_invalid">网络异常，请联系管理员</string>
     <string name="login_error">登录异常，请联系管理员</string>
+
+    <string name="pay_success_tips">恭喜您获得%s一个</string>
+    <string name="order_id">订单编号:%s</string>
 </resources>

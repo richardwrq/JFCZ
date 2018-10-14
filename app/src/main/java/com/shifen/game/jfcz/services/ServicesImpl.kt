@@ -1,6 +1,7 @@
 package com.shifen.game.jfcz.services
 
 import android.content.Context
+import android.util.Log
 import com.shifen.game.jfcz.BuildConfig
 import com.shifen.game.jfcz.JFCZApplication
 import com.shifen.game.jfcz.model.LoginResult
@@ -16,6 +17,7 @@ class LoginServiceImpl {
         val num = random.nextInt(999999)
         val imei = JFCZApplication.INSTANCE.DEVICE_ID
         val md5 = "deviceNum=$imei&random=$num&apiKey=${BuildConfig.API_KEY}".md5()
+        Log.i("LoginServiceImpl", "imei: $imei")
         return ServiceManager.create(LoginService::class.java).login(imei, num, md5)
     }
 

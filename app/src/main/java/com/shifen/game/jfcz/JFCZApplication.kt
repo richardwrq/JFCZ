@@ -2,7 +2,9 @@ package com.shifen.game.jfcz
 
 import android.app.Application
 import android.util.Log
+import com.google.gson.Gson
 import com.shifen.game.jfcz.model.MyUmengMessageHandler
+import com.shifen.game.jfcz.model.PushBindRequestBody
 import com.shifen.game.jfcz.services.PushService
 import com.shifen.game.jfcz.services.ServiceManager
 import com.shifen.game.jfcz.utils.*
@@ -12,6 +14,7 @@ import com.umeng.message.MsgConstant
 import com.umeng.message.PushAgent
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import okhttp3.RequestBody
 
 
 class JFCZApplication : Application() {
@@ -51,9 +54,15 @@ class JFCZApplication : Application() {
         mPushAgent.register(object : IUmengRegisterCallback {
             override fun onSuccess(p0: String) {
                 Log.d("JFCZApplication", "um register success! $p0")
-                compositeDisposable.add(ServiceManager.create(PushService::class.java).bind(DEVICE_ID, p0)
+                val pushBindRequestBody = PushBindRequestBody(DEVICE_ID, p0)
+                val gson = Gson()
+                val json = gson.toJson(pushBindRequestBody)
+                val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
+                compositeDisposable.add(ServiceManager.create(PushService::class.java).bind(body)
                         .subscribeOn(Schedulers.io())
-                        .subscribe { Log.i("JFCZApplication", "bind result: ${it.data}") })
+                        .subscribe {
+                            Log.i("JFCZApplication", "bind result: $it")
+                        })
             }
 
             override fun onFailure(p0: String, p1: String) {

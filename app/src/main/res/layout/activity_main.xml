@@ -26,12 +26,4 @@
         app:scroll_time="3000"
         app:banner_default_image="@android:color/transparent"/>
 
-    <Button
-        android:id="@+id/btnGrabGift"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/bg_btn_grab_gift"
-        android:elevation="14dp"
-        android:onClick="gotoGiftList"/>
 </LinearLayout>
