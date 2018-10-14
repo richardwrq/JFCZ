@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.shifen.game.jfcz.ConfigManager
 import com.shifen.game.jfcz.R
+import com.shifen.game.jfcz.model.GameConfig
 import com.shifen.game.jfcz.services.GameService
 import com.shifen.game.jfcz.services.ServiceManager
 import com.shifen.game.jfcz.services.observeOnMain
@@ -58,8 +59,13 @@ class GameActivity : BaseActivity() {
 
     private var mGirdId = ""
     private var mUserId = ""
-    private var mGoodsId = -1
+    private var mGoodsId = ""
     private var mSessionId = ""
+
+//    private var mGirdId = "0000000000000001"
+//    private var mUserId = "wx3453645756345d535"
+//    private var mGoodsId = "0000000000001111"
+//    private var mSessionId = "1000000000000001"
 
     init {
         val animation1 = AlphaAnimation(0f, 1f)
@@ -101,19 +107,7 @@ class GameActivity : BaseActivity() {
                         game.visibility = View.GONE
                         ivFruits1.visibility = View.VISIBLE
                         ivFruits2.visibility = View.VISIBLE
-                        val gameConfig = ConfigManager.getGameConfig()[curRoundIndex]
-                        val jsonObject = JSONObject()
-                        jsonObject.put("gridId", mGirdId)
-                        jsonObject.put("userId", mGoodsId)
-                        jsonObject.put("goodsId", mUserId)
-                        jsonObject.put("sessionId", mSessionId)
-                        jsonObject.put("gameId", gameConfig.gameId)
-                        jsonObject.put("checkPointLevel", gameConfig.checkPointLevel)
-                        jsonObject.put("passStatus", 1)
-                        jsonObject.put("passTime", gameConfig.leaveTime - countDownSeconds)
-
-                        val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString())
-                        ServiceManager.create(GameService::class.java).updateGameStatus(body).observeOnMain { }
+                        updateGameStatus(1)
 
                         ivFruits1AnimatorSet.start()
                         ivFruits2AnimatorSet.start()
@@ -221,7 +215,9 @@ class GameActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        mGoodsId = intent.getIntExtra(KEY_GOODS_ID, -1)
+        intent.getStringExtra(KEY_GOODS_ID)?.let {
+            mGoodsId = it
+        }
         intent.getStringExtra(KEY_GIRD_ID)?.let {
             mGirdId = it
         }
@@ -272,20 +268,7 @@ class GameActivity : BaseActivity() {
 
         tvWaitKnifeNum.text = waitKnifeNum.toString()
 
-        val jsonObject = JSONObject()
-        jsonObject.put("gridId", mGirdId)
-        jsonObject.put("userId", mGoodsId)
-        jsonObject.put("goodsId", mUserId)
-        jsonObject.put("sessionId", mSessionId)
-        jsonObject.put("gameId", gameConfig.gameId)
-        jsonObject.put("checkPointLevel", gameConfig.checkPointLevel)
-
-        val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString())
-        ServiceManager.create(GameService::class.java).newGameStatus(body).observeOnMain {}
-
-
-//        ServiceManager.create(GameService::class.java).newGameStatus(mGirdId, mGoodsId, mUserId, mSessionId,
-//                gameConfig.gameId, gameConfig.checkPointLevel).observeOnMain {}
+        newGame(gameConfig)
 
         ltRound.postDelayed({
             ltRound.visibility = View.GONE
@@ -328,19 +311,7 @@ class GameActivity : BaseActivity() {
             tvCountDownTimeFailure.visibility = View.GONE
             btnGameFinish.setImageResource(R.drawable.bg_btn_win)
         } else {
-            val gameConfig = ConfigManager.getGameConfig()[curRoundIndex]
-            val jsonObject = JSONObject()
-            jsonObject.put("gridId", mGirdId)
-            jsonObject.put("userId", mGoodsId)
-            jsonObject.put("goodsId", mUserId)
-            jsonObject.put("sessionId", mSessionId)
-            jsonObject.put("gameId", gameConfig.gameId)
-            jsonObject.put("checkPointLevel", gameConfig.checkPointLevel)
-            jsonObject.put("passStatus", 2)
-            jsonObject.put("passTime", gameConfig.leaveTime - countDownSeconds)
-
-            val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString())
-            ServiceManager.create(GameService::class.java).updateGameStatus(body).observeOnMain { }
+            updateGameStatus(2)
 
             ltResult.setBackgroundResource(R.mipmap.bg_game)
             ivResult.setImageResource(R.mipmap.ic_game_failure)
@@ -382,6 +353,35 @@ class GameActivity : BaseActivity() {
                 tvCountDownTime.text = countDownSeconds.toString()
             }
         }
+    }
+
+    private fun updateGameStatus(status: Int) {
+        val gameConfig = ConfigManager.getGameConfig()[curRoundIndex]
+        val jsonObject = JSONObject()
+        jsonObject.put("gridId", mGirdId)
+        jsonObject.put("userId", mUserId)
+        jsonObject.put("goodsId", mGoodsId)
+        jsonObject.put("sessionId", mSessionId)
+        jsonObject.put("gameId", gameConfig.gameId)
+        jsonObject.put("checkPointLevel", gameConfig.checkPointLevel)
+        jsonObject.put("passStatus", status)
+        jsonObject.put("passTime", gameConfig.leaveTime - countDownSeconds)
+
+        val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString())
+        ServiceManager.create(GameService::class.java).updateGameStatus(body).observeOnMain { }
+    }
+
+    private fun newGame(gameConfig: GameConfig) {
+        val jsonObject = JSONObject()
+        jsonObject.put("gridId", mGirdId)
+        jsonObject.put("userId", mUserId)
+        jsonObject.put("goodsId", mGoodsId)
+        jsonObject.put("sessionId", mSessionId)
+        jsonObject.put("gameId", gameConfig.gameId)
+        jsonObject.put("checkPointLevel", gameConfig.checkPointLevel)
+
+        val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString())
+        ServiceManager.create(GameService::class.java).newGameStatus(body).observeOnMain {}
     }
 
 }
