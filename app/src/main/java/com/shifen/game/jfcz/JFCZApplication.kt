@@ -28,6 +28,7 @@ class JFCZApplication : Application() {
         INSTANCE = this
         initUM()
 
+        ConfigManager.init(this)
         ApiConfig.token = getConfig().getString(APP_TOKEN, "")!!
         ApiConfig.containerId = getConfig().getString(CONTAINER_ID, "")!!
     }

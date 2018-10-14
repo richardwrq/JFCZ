@@ -14,8 +14,9 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
-import retrofit2.http.GET
-import retrofit2.http.Query
+import okhttp3.RequestBody
+import retrofit2.http.*
+
 
 fun <T> Observable<Response<T>>.observeOnMain(observerAdapter: ObserverAdapter<Response<T>>) {
     if (JFCZApplication.INSTANCE.getConfig().getLong(TOKEN_TIMEOUT, 0L) - System.currentTimeMillis() <= 24 * 60 * 60 * 1000L) {
@@ -158,3 +159,19 @@ interface ConfigService {
     @GET("/sale/config")
     fun getConfig(): Observable<Response<Config>>
 }
+
+interface GameService {
+
+    @GET("/sale/game-config")
+    fun getGameConfig(): Observable<Response<List<GameConfig>>>
+
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST("/sale/new/game")
+    fun newGameStatus(@Body json: RequestBody): Observable<Response<String>>
+
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST("/sale/update/game-status")
+    fun updateGameStatus(@Body json: RequestBody): Observable<Response<String>>
+
+}
+

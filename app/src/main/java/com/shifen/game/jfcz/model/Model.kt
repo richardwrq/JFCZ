@@ -204,3 +204,20 @@ data class OrderStatus(val userId: String, val gameSessionId: String)
 data class Config(val id: Long, val containerId: String, val gridLineNumber: Int, val musicType: Int,
                   val musicUrl: String, val url: String, val gridVersion: String, val goodsVersion: String,
                   val createTime: String, val updateTime: String)
+
+
+/**
+ *
+ * @property createTime Long
+ * @property checkPointLevel Int
+ * @property gameId Int
+ * @property kineves Int
+ * @property leaveTime Int
+ * @property rotate Int
+ * @property speed Int
+ * @property updateTime Long
+ * @constructor
+ */
+data class GameConfig(val createTime: Long, val checkPointLevel: Int, val gameId: Int, val kineves: Int,
+                      val leaveTime: Int, val rotate: Int, val speed: Int, val updateTime: Long)
+

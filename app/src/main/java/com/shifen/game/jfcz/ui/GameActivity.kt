@@ -13,8 +13,15 @@ import android.view.animation.AnimationSet
 import android.view.animation.TranslateAnimation
 import android.widget.ImageView
 import android.widget.TextView
+import com.shifen.game.jfcz.ConfigManager
 import com.shifen.game.jfcz.R
+import com.shifen.game.jfcz.services.GameService
+import com.shifen.game.jfcz.services.ServiceManager
+import com.shifen.game.jfcz.services.observeOnMain
 import kotlinx.android.synthetic.main.activity_game.*
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import org.json.JSONObject
 
 
 class GameActivity : BaseActivity() {
@@ -42,6 +49,17 @@ class GameActivity : BaseActivity() {
 
     private var countDownTimer = createCountDownTimer()
     private var countDownTimerFailure: CountDownTimer? = null
+
+    // intent
+    public val KEY_GIRD_ID = "KEY_GIRD_ID"
+    public val KEY_USER_ID = "KEY_USER_ID"
+    public val KEY_GOODS_ID = "KEY_GOODS_ID"
+    public val KEY_SESSION_ID = "KEY_SESSION_ID"
+
+    private var mGirdId = ""
+    private var mUserId = ""
+    private var mGoodsId = -1
+    private var mSessionId = ""
 
     init {
         val animation1 = AlphaAnimation(0f, 1f)
@@ -83,6 +101,20 @@ class GameActivity : BaseActivity() {
                         game.visibility = View.GONE
                         ivFruits1.visibility = View.VISIBLE
                         ivFruits2.visibility = View.VISIBLE
+                        val gameConfig = ConfigManager.getGameConfig()[curRoundIndex]
+                        val jsonObject = JSONObject()
+                        jsonObject.put("gridId", mGirdId)
+                        jsonObject.put("userId", mGoodsId)
+                        jsonObject.put("goodsId", mUserId)
+                        jsonObject.put("sessionId", mSessionId)
+                        jsonObject.put("gameId", gameConfig.gameId)
+                        jsonObject.put("checkPointLevel", gameConfig.checkPointLevel)
+                        jsonObject.put("passStatus", 1)
+                        jsonObject.put("passTime", gameConfig.leaveTime - countDownSeconds)
+
+                        val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString())
+                        ServiceManager.create(GameService::class.java).updateGameStatus(body).observeOnMain { }
+
                         ivFruits1AnimatorSet.start()
                         ivFruits2AnimatorSet.start()
                     }
@@ -101,6 +133,7 @@ class GameActivity : BaseActivity() {
                 game.visibility = View.VISIBLE
                 ivFruits1.visibility = View.GONE
                 ivFruits2.visibility = View.GONE
+                countDownTimer.cancel()
                 nextRound()
             }
 
@@ -147,15 +180,20 @@ class GameActivity : BaseActivity() {
         } else {
             ltWaitKnife2Group.visibility = View.GONE
         }
-        for (i in 1..waitKnifeNum) {
+        for (i in 1..10) {
             val ivWaitKnife = ImageView(this)
             ivWaitKnife.setImageResource(R.mipmap.ic_knife_wait)
-            if (i > 10) {
-                ltWaitKnife2.addView(ivWaitKnife)
-            } else {
-                ltWaitKnife.addView(ivWaitKnife)
-            }
+            ivWaitKnife.visibility = View.GONE
+            ltWaitKnife.addView(ivWaitKnife)
             waitKnifeViews.add(ivWaitKnife)
+        }
+
+        for (i in 1..10) {
+            val ivWaitKnife2 = ImageView(this)
+            ivWaitKnife2.setImageResource(R.mipmap.ic_knife_wait)
+            ivWaitKnife2.visibility = View.GONE
+            ltWaitKnife2.addView(ivWaitKnife2)
+            waitKnifeViews.add(ivWaitKnife2)
         }
 
         game.setOnClickListener {
@@ -181,9 +219,44 @@ class GameActivity : BaseActivity() {
 //        Log.e("czm", "width = $width ---  height = $height ---- density = $density --- densityDpi = $densityDpi")
     }
 
+    override fun onResume() {
+        super.onResume()
+        mGoodsId = intent.getIntExtra(KEY_GOODS_ID, -1)
+        intent.getStringExtra(KEY_GIRD_ID)?.let {
+            mGirdId = it
+        }
+        intent.getStringExtra(KEY_USER_ID)?.let {
+            mUserId = it
+        }
+        intent.getStringExtra(KEY_SESSION_ID)?.let {
+            mSessionId = it
+        }
+    }
+
+    private fun enableReverse() {
+        game.postDelayed({
+            game.enableReverse = !game.enableReverse
+            enableReverse()
+        }, 5000)
+    }
+
     private fun nextRound() {
-        // 通关
         curRoundIndex++
+        val gameConfig = ConfigManager.getGameConfig()[curRoundIndex]
+        waitKnifeNum = Math.min(gameConfig.kineves, 20)
+        countDownSeconds = gameConfig.leaveTime
+        game.speed = gameConfig.speed * 80
+
+        if (waitKnifeNum > 10) {
+            ltWaitKnife2Group.visibility = View.VISIBLE
+        } else {
+            ltWaitKnife2Group.visibility = View.GONE
+        }
+        for (i in 0 until waitKnifeNum) {
+            waitKnifeViews[i].visibility = View.VISIBLE
+        }
+
+        // 通关
         if (curRoundIndex == 3) {
             updateGameResultView(true)
             return
@@ -197,12 +270,22 @@ class GameActivity : BaseActivity() {
         ivFruits1.setImageResource(fruits1IndexIds[curRoundIndex])
         ivFruits2.setImageResource(fruits2IndexIds[curRoundIndex])
 
-        waitKnifeNum = waitKnifeViews.size
-        waitKnifeViews.forEach {
-            it.visibility = View.VISIBLE
-        }
-
         tvWaitKnifeNum.text = waitKnifeNum.toString()
+
+        val jsonObject = JSONObject()
+        jsonObject.put("gridId", mGirdId)
+        jsonObject.put("userId", mGoodsId)
+        jsonObject.put("goodsId", mUserId)
+        jsonObject.put("sessionId", mSessionId)
+        jsonObject.put("gameId", gameConfig.gameId)
+        jsonObject.put("checkPointLevel", gameConfig.checkPointLevel)
+
+        val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString())
+        ServiceManager.create(GameService::class.java).newGameStatus(body).observeOnMain {}
+
+
+//        ServiceManager.create(GameService::class.java).newGameStatus(mGirdId, mGoodsId, mUserId, mSessionId,
+//                gameConfig.gameId, gameConfig.checkPointLevel).observeOnMain {}
 
         ltRound.postDelayed({
             ltRound.visibility = View.GONE
@@ -211,9 +294,11 @@ class GameActivity : BaseActivity() {
             game.prepare(centerBitmapIds[curRoundIndex])
             roundViews[curRoundIndex].isSelected = true
             tvCountDownTime.text = countDownSeconds.toString()
-            countDownTimer.cancel()
             countDownTimer = createCountDownTimer()
             countDownTimer.start()
+            if (gameConfig.rotate == 1) {
+                enableReverse()
+            }
             game.start()
         }, 3000L)
     }
@@ -243,6 +328,20 @@ class GameActivity : BaseActivity() {
             tvCountDownTimeFailure.visibility = View.GONE
             btnGameFinish.setImageResource(R.drawable.bg_btn_win)
         } else {
+            val gameConfig = ConfigManager.getGameConfig()[curRoundIndex]
+            val jsonObject = JSONObject()
+            jsonObject.put("gridId", mGirdId)
+            jsonObject.put("userId", mGoodsId)
+            jsonObject.put("goodsId", mUserId)
+            jsonObject.put("sessionId", mSessionId)
+            jsonObject.put("gameId", gameConfig.gameId)
+            jsonObject.put("checkPointLevel", gameConfig.checkPointLevel)
+            jsonObject.put("passStatus", 2)
+            jsonObject.put("passTime", gameConfig.leaveTime - countDownSeconds)
+
+            val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString())
+            ServiceManager.create(GameService::class.java).updateGameStatus(body).observeOnMain { }
+
             ltResult.setBackgroundResource(R.mipmap.bg_game)
             ivResult.setImageResource(R.mipmap.ic_game_failure)
             btnGameFinish.visibility = View.VISIBLE
@@ -272,8 +371,7 @@ class GameActivity : BaseActivity() {
     }
 
     private fun createCountDownTimer(): CountDownTimer {
-        countDownSeconds = COUNT_DOWN_SECONDS
-        return object : CountDownTimer(COUNT_DOWN_SECONDS * 1000L, 1000) {
+        return object : CountDownTimer(countDownSeconds * 1000L, 1000) {
             override fun onFinish() {
                 isFailure = true
                 updateGameResultView(false)
