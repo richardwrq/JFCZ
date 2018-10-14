@@ -24,8 +24,15 @@ class SmallGapsView @JvmOverloads constructor(
     private var countDownTimer = createCountDownTimer()
 
     // 速度，单位：度／秒
-    private var speed = 100
-    private var increaseAngle = countDownInterval * speed / 1000
+    var speed = 100
+    // 是否开启正反转
+    var enableReverse = false
+        set (value) {
+            if (value != field) {
+                updateCurAngle()
+                field = value
+            }
+        }
 
     private var curAngle = 0f
     private var curTime = -1L
@@ -52,6 +59,7 @@ class SmallGapsView @JvmOverloads constructor(
 
     // 游戏是否失败，但增加小刀失败是置位
     private var isFailure = false
+
 
     init {
         paint.style = Paint.Style.FILL
@@ -88,9 +96,7 @@ class SmallGapsView @JvmOverloads constructor(
             return false
         }
         var result = true
-        curAngle = (curAngle + (System.currentTimeMillis() - curTime) * speed / 1000) % 360
-        curTime = System.currentTimeMillis()
-
+        updateCurAngle()
         knifeArray.forEach {
             if (curAngle in it - FAILUR_ANGLE..it + FAILUR_ANGLE) {
                 isFailure = true
@@ -132,11 +138,19 @@ class SmallGapsView @JvmOverloads constructor(
             }
 
             override fun onTick(p0: Long) {
-                curAngle = (curAngle + increaseAngle) % 360
-                curTime = System.currentTimeMillis()
+                updateCurAngle()
                 invalidate()
             }
         }
+    }
+
+    private fun updateCurAngle() {
+        curAngle = if (enableReverse) {
+            (curAngle - (System.currentTimeMillis() - curTime) * speed / 1000) % 360
+        } else {
+            (curAngle + (System.currentTimeMillis() - curTime) * speed / 1000) % 360
+        }
+        curTime = System.currentTimeMillis()
     }
 }
 
