@@ -28,9 +28,9 @@ object ConfigManager {
     private var mGson = Gson()
 
     private const val mDefaultGameConfigJsonStr = "[" +
-            "{\"createTime\":0,\"checkPointLevel\":1,\"id\":1,\"kineves\":5,\"leaveTime\":15,\"rotate\":0,\"speed\":2,\"updateTime\":0}," +
-            "{\"createTime\":0,\"checkPointLevel\":2,\"id\":2,\"kineves\":10,\"leaveTime\":13,\"rotate\":1,\"speed\":2,\"updateTime\":0}," +
-            "{\"createTime\":0,\"checkPointLevel\":3,\"id\":3,\"kineves\":15,\"leaveTime\":10,\"rotate\":1,\"speed\":3,\"updateTime\":0}]"
+            "{\"createTime\":0,\"gameId\":1,\"checkPointLevel\":1,\"id\":1,\"kineves\":5,\"leaveTime\":15,\"rotate\":0,\"speed\":2,\"updateTime\":0}," +
+            "{\"createTime\":0,\"gameId\":2,\"checkPointLevel\":2,\"id\":2,\"kineves\":10,\"leaveTime\":13,\"rotate\":1,\"speed\":2,\"updateTime\":0}," +
+            "{\"createTime\":0,\"gameId\":3,\"checkPointLevel\":3,\"id\":3,\"kineves\":15,\"leaveTime\":10,\"rotate\":1,\"speed\":3,\"updateTime\":0}]"
     private val mDefaultGameConfig: ArrayList<GameConfig>
     private var mGameConfig: List<GameConfig>? = null
 
