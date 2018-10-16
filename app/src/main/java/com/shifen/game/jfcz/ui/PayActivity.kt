@@ -20,6 +20,8 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_pay.*
 import java.util.concurrent.TimeUnit
 import okhttp3.RequestBody
+import java.text.Format
+import java.text.SimpleDateFormat
 
 
 class PayActivity : BaseActivity() {
@@ -48,7 +50,7 @@ class PayActivity : BaseActivity() {
 
     private fun init() {
         goods = intent.getParcelableExtra(GOODS_KEY)
-        type = intent.getIntExtra(BUY_TYPE, -1)
+        type  = intent.getIntExtra(BUY_TYPE, -1)
 
         tvGiftNumber.text = getString(R.string.choose_gift, goods.id)
         tvGiftName.text = goods.description
@@ -63,9 +65,11 @@ class PayActivity : BaseActivity() {
 
         disposables.add(Observable.interval(orderStatusInterval, orderStatusInterval, TimeUnit.SECONDS)
                 .subscribe {
-                    val timestamp = System.currentTimeMillis() / 1000
+                    var t = ApiConfig.timestamp*1000;
+                    var sdf: Format = SimpleDateFormat("yyyyMMddHHmmss")
+                    var timestamp =  sdf.format(t);
                     val transferId = ApiConfig.containerId + goods.gridId + goods.goodsId + timestamp
-                    val orderStatus = OrderStatusRequestBody(timestamp, transferId)
+                    val orderStatus = OrderStatusRequestBody(ApiConfig.timestamp, transferId)
                     val gson = Gson()
                     val json = gson.toJson(orderStatus)
                     val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
@@ -112,7 +116,7 @@ class PayActivity : BaseActivity() {
 
     private fun refreshQRCode() {
         ivQRCode.setImageBitmap(ApiConfig.generateQRCode(
-                goods.id,
+                goods.goodsId,goods.gridId,
                 type, resources.getDimensionPixelSize(R.dimen.qrcode_width),
                 resources.getDimensionPixelSize(R.dimen.qrcode_height)))
     }

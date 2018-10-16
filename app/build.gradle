@@ -22,7 +22,7 @@ android {
             Properties properties = new Properties()
             InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
             properties.load( inputStream )
-
+            /*
             def sdkDir = properties.getProperty('key.file')
 
             def key_keyAlias = properties.getProperty( 'keyAlias' )
@@ -33,6 +33,7 @@ android {
             storePassword key_storePassword
             keyAlias key_keyAlias
             keyPassword key_keyPassword
+            */
         }
     }
 

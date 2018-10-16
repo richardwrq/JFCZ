@@ -2,6 +2,7 @@ package com.shifen.game.jfcz.utils
 
 import android.graphics.Bitmap
 import com.shifen.game.jfcz.BuildConfig
+import com.shifen.game.jfcz.JFCZApplication
 import com.shifen.game.jfcz.model.Config
 import com.uuzuche.lib_zxing.activity.CodeUtils
 
@@ -15,13 +16,15 @@ object ApiConfig {
 
     var containerId = ""
 
+    var timestamp = 0L;
+
     var config: Config? = null
 
-    fun generateQRCode(goodsId: Long, type: Int, w: Int, h: Int): Bitmap {
+    fun generateQRCode(goodsId: String, gridId :String ,type: Int, w: Int, h: Int): Bitmap {
         val timestamp = System.currentTimeMillis() / 1000
-        val deviceId = "1000000000000001"//getIMEI(JFCZApplication.INSTANCE)
-        val sign = (timestamp.toString() + goodsId + ApiConfig.containerId + deviceId + type + BuildConfig.API_KEY).md5()
-        val url = "${ApiConfig.BASE_URL}/pay/scan2pay?t=$timestamp&goodsid=$goodsId&gid=${ApiConfig.containerId}&devid=$deviceId&type=$type&sign=$sign"
+        ApiConfig.timestamp = timestamp;
+        val sign = ("t="+timestamp.toString()+"&goodsid=" + goodsId +"&gid=" + gridId +"&devid="+ ApiConfig.containerId  + "&type=" +type + "&key="+BuildConfig.API_KEY).md5()
+        val url = "${ApiConfig.BASE_URL}/pay/scan2pay?t=$timestamp&goodsid=$goodsId&gid=$gridId&devid=${ApiConfig.containerId}&type=$type&sign=$sign"
         return CodeUtils.createImage(url, w, h, null)
     }
 }
