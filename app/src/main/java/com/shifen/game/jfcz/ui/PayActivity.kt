@@ -2,7 +2,6 @@ package com.shifen.game.jfcz.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.shifen.game.jfcz.R
@@ -63,6 +62,9 @@ class PayActivity : BaseActivity() {
             refreshQRCode()
         }
 
+        closebutton.setOnClickListener {
+            onNoOperation();
+        }
         disposables.add(Observable.interval(orderStatusInterval, orderStatusInterval, TimeUnit.SECONDS)
                 .subscribe {
                     var t = ApiConfig.timestamp*1000;

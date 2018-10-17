@@ -68,6 +68,10 @@ class GiftListActivity : BaseActivity() {
                 putExtra(PayActivity.BUY_TYPE, PayActivity.GAME)
             })
         }
+
+        closebutton.setOnClickListener {
+            onNoOperation();
+        }
     }
 
     private fun questGiftList() {

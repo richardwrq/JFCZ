@@ -131,4 +131,13 @@
         android:background="@drawable/bg_btn_challenge"
         android:textSize="20dp"
         android:textColor="#212121"/>
+
+    <Button
+        android:id="@+id/closebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="close"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="16dp" />
+
 </android.support.constraint.ConstraintLayout>

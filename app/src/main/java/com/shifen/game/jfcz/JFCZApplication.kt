@@ -36,7 +36,7 @@ class JFCZApplication : Application() {
         super.onCreate()
         INSTANCE = this
         initUM()
-        // initTB()
+        //initTB()
         ConfigManager.init(this)
         ApiConfig.token = getConfig().getString(APP_TOKEN, "")!!
         ApiConfig.containerId = getConfig().getString(CONTAINER_ID, "")!!
@@ -91,15 +91,12 @@ class JFCZApplication : Application() {
         }
 
         val TB_KEY = appInfo!!.metaData.getString("TB_KEY")
-        Log.i("JFCZApplication", "=======TB_KEY==========")
-        Log.i("JFCZApplication", TB_KEY)
-
         serialOperate = SerialOperate.getInstance();
         serialOperate.initSerial(this, TB_KEY, 0, 9600, { bytes ->
             if (bytes != null) {
                 response.add(bytes[0])
                 if (bytes[0] == 0xFA.toByte()) {
-                    var msg = ByteArray(response.size)
+                    val msg = ByteArray(response.size)
                     var i = 0
                     while (i < response.size) {
                         msg[i] = response[i];
@@ -130,10 +127,10 @@ class JFCZApplication : Application() {
      */
     fun deliverGoods(num: Int) {
 
-        var byte0 = 52;
-        var byte1 = num;
+        val byte0 = 52;
+        val byte1 = num;
         val byteArrayOf = byteArrayOf(byte0.toByte(), byte1.toByte())
-        var bytes =crcCheck(byteArrayOf)
+        val bytes =crcCheck(byteArrayOf)
         sendData(bytes)
     }
 
@@ -142,15 +139,10 @@ class JFCZApplication : Application() {
      *@Param: num 柜门编号，不传查所有
      */
     fun checkState(num: Int?){
-        var byte0 = 54;
-        var byte1:Byte
-        if (num ==null){
-            byte1 = 0x00
-        }else {
-            byte1 =num.toByte()
-        }
+        val byte0 = 54;
+        val byte1= if (num ==null){ 0x00 }else { num.toByte() }
         val byteArrayOf = byteArrayOf(byte0.toByte(), byte1.toByte())
-        var bytes =crcCheck(byteArrayOf)
+        val bytes =crcCheck(byteArrayOf)
         sendData(bytes)
     }
 
@@ -159,15 +151,10 @@ class JFCZApplication : Application() {
      *@Param: num 柜门编号，不传查所有
      */
     fun checkGoodsNum(num: Int?){
-        var byte0 = 56;
-        var byte1:Byte
-        if (num ==null){
-            byte1 = 0x00
-        }else {
-            byte1 =num.toByte()
-        }
+        val byte0 = 56;
+        val byte1= if (num ==null){ 0x00 }else { num.toByte() }
         val byteArrayOf = byteArrayOf(byte0.toByte(), byte1.toByte())
-        var bytes =crcCheck(byteArrayOf)
+        val bytes =crcCheck(byteArrayOf)
         sendData(bytes)
     }
 
@@ -176,15 +163,10 @@ class JFCZApplication : Application() {
      *@Param: num 柜门编号，不传查所有
      */
     fun reset(num: Int?){
-        var byte0 = 58;
-        var byte1:Byte
-        if (num ==null){
-            byte1 = 0x00
-        }else {
-            byte1 =num.toByte()
-        }
+        val byte0 = 58;
+        val byte1= if (num ==null){ 0x00 }else { num.toByte() }
         val byteArrayOf = byteArrayOf(byte0.toByte(), byte1.toByte())
-        var bytes =crcCheck(byteArrayOf)
+        val bytes =crcCheck(byteArrayOf)
         sendData(bytes)
     }
 
@@ -204,8 +186,8 @@ class JFCZApplication : Application() {
      *@Param:
      */
     fun crcCheck(byteArray:ByteArray): ByteArray {
-        var newArr =CRC16Util.appendCrc16(byteArray);
-        var bytes =byteArrayOf(0x81.toByte(), 0x01, byteArray.size.toByte(), newArr[0], newArr[1], newArr[3], newArr[2], 0xFA.toByte())
+        val newArr =CRC16Util.appendCrc16(byteArray);
+        val bytes =byteArrayOf(0x81.toByte(), 0x01, byteArray.size.toByte(), newArr[0], newArr[1], newArr[3], newArr[2], 0xFA.toByte())
         return bytes;
     }
 

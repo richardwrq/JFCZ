@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -25,7 +26,7 @@ import okhttp3.RequestBody
 import org.json.JSONObject
 
 
-class GameActivity : BaseActivity() {
+class GameActivity : AppCompatActivity() {
     private val COUNT_DOWN_SECONDS = 30
     private val COUNT_DOWN_SECONDS_FAILURE = 10
     private var curRoundIndex = -1
@@ -342,7 +343,6 @@ class GameActivity : BaseActivity() {
         startActivity(Intent(this, GiftListActivity::class.java))
         finish()
     }
-
     private fun createCountDownTimer(): CountDownTimer {
         return object : CountDownTimer(countDownSeconds * 1000L, 1000) {
             override fun onFinish() {

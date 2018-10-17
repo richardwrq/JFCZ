@@ -3,6 +3,7 @@ package com.shifen.game.jfcz.ui
 import android.os.Build
 import android.os.CountDownTimer
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
@@ -54,6 +55,7 @@ open class BaseActivity : AppCompatActivity() {
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         when (ev.actionMasked) {
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                countDownTimer.cancel();
                 countDownTimer.start()
             }
 
@@ -66,5 +68,22 @@ open class BaseActivity : AppCompatActivity() {
      */
     open fun onNoOperation() {
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startTimer()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopTimer();
+    }
+
+    open fun startTimer(){
+        countDownTimer.start()
+    }
+    open fun stopTimer() {
+        countDownTimer.cancel()
     }
 }
