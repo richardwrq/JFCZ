@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -94,6 +95,7 @@ class GameActivity : AppCompatActivity() {
             override fun onAnimationEnd(p0: Animation?) {
                 isFailure = !game.addKnife()
                 waitKnifeNum--
+                if (waitKnifeNum < 0 ) return;
                 tvWaitKnifeNum.text = waitKnifeNum.toString()
                 waitKnifeViews[waitKnifeNum].visibility = View.INVISIBLE
 
@@ -241,6 +243,11 @@ class GameActivity : AppCompatActivity() {
 
     private fun nextRound() {
         curRoundIndex++
+        // 通关
+        if (curRoundIndex == 3) {
+            updateGameResultView(true)
+            return
+        }
         val gameConfig = ConfigManager.getGameConfig()[curRoundIndex]
         waitKnifeNum = Math.min(gameConfig.kineves, 20)
         countDownSeconds = gameConfig.leaveTime
@@ -253,12 +260,6 @@ class GameActivity : AppCompatActivity() {
         }
         for (i in 0 until waitKnifeNum) {
             waitKnifeViews[i].visibility = View.VISIBLE
-        }
-
-        // 通关
-        if (curRoundIndex == 3) {
-            updateGameResultView(true)
-            return
         }
         ltRound.visibility = View.VISIBLE
         ivStar1.visibility = View.INVISIBLE
@@ -339,6 +340,11 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        countDownTimerFailure?.cancel()
+        countDownTimer.cancel()
+    }
     private fun startGameNow() {
         startActivity(Intent(this, GiftListActivity::class.java))
         finish()

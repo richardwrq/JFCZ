@@ -93,11 +93,11 @@ class PayActivity : BaseActivity() {
                                         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                     })
 
-                                    ServiceManager.create(GoodsService::class.java).updateGoods(goods.gridId, goods.goodsId)
+                                    /*ServiceManager.create(GoodsService::class.java).updateGoods(goods.gridId, goods.goodsId)
                                             .wrapLogin()
                                             .subscribeOn(Schedulers.io())
-                                            .subscribe { }
-                                    TODO("打开货柜，上报")
+                                            .subscribe { }*/
+                                    // TODO("打开货柜，上报")
                                 } else if (type == GAME) {
                                     startActivity(Intent(this, GameActivity::class.java).apply {
                                         putExtra(GameActivity.KEY_GIRD_ID, goods.gridId)
