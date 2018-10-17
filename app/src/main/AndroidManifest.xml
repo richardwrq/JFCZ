@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.shifen.game.jfcz">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/><!-- 申请使用 JNI 权限 -->
+    <uses-permission android:name="android.permission.INJECT_EVENTS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES"
+        tools:ignore="ProtectedPermissions" /> <!-- 申请读写权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
 
     <application
         android:name=".JFCZApplication"
@@ -50,6 +61,10 @@
         <meta-data
             android:name="UMENG_MESSAGE_SECRET"
             android:value="72fe2d62f461225525dd7e46a9babc6b"/>
+
+        <meta-data
+            android:name="TB_KEY"
+            android:value="tb07cc03cff1509ebc"/>
     </application>
 
 </manifest>
