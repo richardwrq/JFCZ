@@ -2,6 +2,7 @@ package com.shifen.game.jfcz.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.shifen.game.jfcz.R
@@ -105,6 +106,7 @@ class PayActivity : BaseActivity() {
                                         putExtra(GameActivity.KEY_SESSION_ID, res.data.gameSessionId)
                                         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                     })
+                                    disposables.dispose()
                                 }
                             }, onError = { t ->
                                 t.printStackTrace()
