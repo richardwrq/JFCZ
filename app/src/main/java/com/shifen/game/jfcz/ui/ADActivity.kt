@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import com.shifen.game.jfcz.ConfigManager
 import com.shifen.game.jfcz.R
 import com.shifen.game.jfcz.model.Banner
@@ -70,6 +71,11 @@ class ADActivity : BaseActivity()  {
                 }, onError = {
                     it.printStackTrace()
                 })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        stopTimer()
     }
 
     override fun onDestroy() {
