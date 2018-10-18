@@ -85,10 +85,10 @@ fun <T> Observable<Response<T>>.observeOnMain(onCompile: (() -> Unit)? = null, o
                 if (t.code == 0) {
                     onNext?.invoke(t)
                 } else {
-                    onError(Throwable(t.message))
+                    //onError(Throwable(t.message))
                 }
             } catch (e: Exception) {
-                onError(e)
+                //onError(e)
             }
         }
     })
@@ -157,8 +157,11 @@ interface PushService {
 
 interface GoodsService {
 
-    @GET("/sale/game-pass/update/goods-lib")
-    fun updateGoods(@Query("gridId") gridId: String, @Query("goodsId") goodsId: String): Observable<Response<String>>
+    @POST("/sale/game-pass/update/goods-lib")
+    fun updateGoods(@Body requestBody: RequestBody): Observable<Response<String>>
+    //fun updateGoods(@Query("gridId") gridId: String, @Query("goodsId") goodsId: String): Observable<Response<String>>
+
+
 }
 
 interface ConfigService {
