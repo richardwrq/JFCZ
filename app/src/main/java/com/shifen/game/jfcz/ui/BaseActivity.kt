@@ -70,16 +70,6 @@ open class BaseActivity : AppCompatActivity() {
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        startTimer()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        stopTimer();
-    }
-
     open fun startTimer(){
         countDownTimer.start()
     }

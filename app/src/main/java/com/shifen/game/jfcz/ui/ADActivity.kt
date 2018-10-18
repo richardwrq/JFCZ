@@ -17,7 +17,7 @@ import com.shifen.game.jfcz.utils.GlideImageLoader
 import com.youth.banner.BannerConfig
 import kotlinx.android.synthetic.main.activity_main.*
 
-class ADActivity : AppCompatActivity()  {
+class ADActivity : BaseActivity()  {
 
     companion object {
         val ACTION_REFRESH_BANNER = "action_refresh_banner"

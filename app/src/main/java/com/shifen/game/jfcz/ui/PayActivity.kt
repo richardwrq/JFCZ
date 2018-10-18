@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
+import com.shifen.game.jfcz.JFCZApplication
 import com.shifen.game.jfcz.R
 import com.shifen.game.jfcz.model.Goods
 import com.shifen.game.jfcz.model.OrderStatusRequestBody
@@ -98,6 +99,9 @@ class PayActivity : BaseActivity() {
                                             .subscribeOn(Schedulers.io())
                                             .subscribe { }*/
                                     // TODO("打开货柜，上报")
+
+                                    var app : JFCZApplication = application as JFCZApplication
+                                    app.checkGoodsNum(1);
                                 } else if (type == GAME) {
                                     startActivity(Intent(this, GameActivity::class.java).apply {
                                         putExtra(GameActivity.KEY_GIRD_ID, goods.gridId)
@@ -136,5 +140,15 @@ class PayActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         disposables.dispose()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startTimer()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopTimer();
     }
 }
