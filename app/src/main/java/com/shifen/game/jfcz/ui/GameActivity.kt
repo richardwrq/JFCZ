@@ -405,10 +405,10 @@ class GameActivity : AppCompatActivity() {
                     Log.i("JFCZApplication","ganme sussess error: ${it.message}")
                 })
 
-        val gift = intent.getParcelableExtra<Gift>(PayActivity.GIFT_KEY)
+        val currentGiftNumber = intent.getIntExtra(PayActivity.GIFT_KEY,-1)
         // TODO("打开货柜，上报")
         var app : JFCZApplication = application as JFCZApplication
-        app.checkGoodsNum(gift.number.toInt());
+        app.checkGoodsNum(currentGiftNumber);
 
     }
 }

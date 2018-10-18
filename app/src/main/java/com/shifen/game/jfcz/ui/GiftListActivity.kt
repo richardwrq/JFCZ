@@ -21,7 +21,7 @@ class GiftListActivity : BaseActivity() {
 
     private var currentGoods: Goods? = null
 
-    private var currentGift:Gift?=null
+    private var currentGiftNumber:Int = 0
     private val adapter = GiftListAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +40,7 @@ class GiftListActivity : BaseActivity() {
         rvGiftList.adapter = adapter
 
         adapter.onItemClickListener = { _, position ->
-            currentGift = adapter.getItem(position)
+            currentGiftNumber = adapter.getItem(position).number.toInt()
             currentGoods = adapter.getItem(position).goodsList[0]
             tvGiftName.text = currentGoods?.description
             tvGiftNumber.text = getString(R.string.choose_gift, currentGoods?.id)
@@ -57,7 +57,7 @@ class GiftListActivity : BaseActivity() {
 
             startActivity(Intent(this, PayActivity::class.java).apply {
                 putExtra(PayActivity.GOODS_KEY, currentGoods)
-                putExtra(PayActivity.GIFT_KEY, currentGift)
+                putExtra(PayActivity.GIFT_KEY, currentGiftNumber)
                 putExtra(PayActivity.BUY_TYPE, PayActivity.BUY)
             })
         }

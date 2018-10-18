@@ -35,8 +35,8 @@ object ServiceManager {
                                 .addQueryParameter("containerId", ApiConfig.containerId)
                         requestBuilder.url(url.build())
                     }
-
                     val request = requestBuilder.build()
+                    Log.i("JFCZApplication","req :${request.toString()}")
                     return@addInterceptor it.proceed(request)
                 }
 

@@ -9,9 +9,13 @@ import android.util.Log
 import com.google.gson.Gson
 import com.shifen.game.jfcz.model.MyUmengMessageHandler
 import com.shifen.game.jfcz.model.PushBindRequestBody
+import com.shifen.game.jfcz.model.operateStatusBody
+import com.shifen.game.jfcz.model.updateGoodsBody
 import com.shifen.game.jfcz.restart.CrashHandler
+import com.shifen.game.jfcz.services.OperateService
 import com.shifen.game.jfcz.services.PushService
 import com.shifen.game.jfcz.services.ServiceManager
+import com.shifen.game.jfcz.services.observeOnMain
 import com.shifen.game.jfcz.ui.ADActivity
 import com.shifen.game.jfcz.ui.ErrorDialog
 import com.shifen.game.jfcz.utils.*
@@ -132,9 +136,6 @@ class JFCZApplication : Application() {
     }
 
     fun sendData(bytes: ByteArray) {
-        if (serialOperate==null) {
-            return
-        }
         Log.i("JFCZApplication", "=======sendData==========")
         Log.i("JFCZApplication", bytesToHexString(bytes))
         serialOperate.sendData(bytes)
@@ -143,6 +144,25 @@ class JFCZApplication : Application() {
     fun updateData(msg: ByteArray) {
         Log.i("JFCZApplication", "=======onDataReceiveBuffListener==========")
         Log.i("JFCZApplication", bytesToHexString(msg))
+
+        if (msg[2] == 0x01.toByte() && msg[3] == 53.toByte()) {
+
+            var status = 3
+            if (msg[5].toInt() == 1) {
+                status= 0
+            }
+            if (msg[5].toInt() == 0) {
+                status= 1
+            }
+            var number = msg[4].toInt()
+            number =8
+            val operateStatusBody = operateStatusBody(number,status)
+            val gson = Gson()
+            val json = gson.toJson(operateStatusBody)
+            val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
+            ServiceManager.create(OperateService::class.java).operateStatus(body).observeOnMain {}
+        }
+
     }
 
     /**
@@ -150,7 +170,7 @@ class JFCZApplication : Application() {
      *@Param: num 柜门编号
      */
     fun deliverGoods(num: Int) {
-
+        Log.i("JFCZApplication","deliverGoods: ${num}")
         val byte0 = 52;
         val byte1 = num;
         val byteArrayOf = byteArrayOf(byte0.toByte(), byte1.toByte())

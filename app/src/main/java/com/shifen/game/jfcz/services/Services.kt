@@ -80,7 +80,7 @@ fun <T> Observable<Response<T>>.observeOnMain(onCompile: (() -> Unit)? = null, o
         }
 
         override fun onNext(t: Response<T>) {
-            Log.d("Response", "res: $t")
+            Log.d("JFCZApplication", "res: $t")
             try {
                 if (t.code == 0) {
                     onNext?.invoke(t)

@@ -30,7 +30,7 @@ class PayActivity : BaseActivity() {
 
     private var type: Int = -1
     private lateinit var goods: Goods
-    private lateinit var gift: Gift
+    private var currentGiftNumber: Int = 0
     private val orderStatusInterval = 2L
     private val qrCodeRefreshInterval = 70L
 
@@ -53,7 +53,7 @@ class PayActivity : BaseActivity() {
     }
 
     private fun init() {
-        gift = intent.getParcelableExtra(GIFT_KEY)
+        currentGiftNumber = intent.getIntExtra(PayActivity.GIFT_KEY,-1)
         goods = intent.getParcelableExtra(GOODS_KEY)
         type  = intent.getIntExtra(BUY_TYPE, -1)
 
@@ -100,12 +100,12 @@ class PayActivity : BaseActivity() {
 
                                     // TODO("打开货柜，上报")
                                     var app : JFCZApplication = application as JFCZApplication
-                                    app.deliverGoods(gift.number.toInt());
+                                    app.deliverGoods(currentGiftNumber);
                                 } else if (type == GAME) {
                                     disposables.dispose()
                                     finish();
                                     startActivity(Intent(this, GameActivity::class.java).apply {
-                                        putExtra(PayActivity.GIFT_KEY, gift)
+                                        putExtra(PayActivity.GIFT_KEY, currentGiftNumber)
                                         putExtra(PayActivity.SESSION_ID_KEY, res.data.gameSessionId)
                                         putExtra(GameActivity.KEY_GIRD_ID, goods.gridId)
                                         putExtra(GameActivity.KEY_GOODS_ID, goods.goodsId)
