@@ -1,14 +1,19 @@
 package com.shifen.game.jfcz
 
 import android.app.Application
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.os.CountDownTimer
 import android.util.Log
 import com.google.gson.Gson
 import com.shifen.game.jfcz.model.MyUmengMessageHandler
 import com.shifen.game.jfcz.model.PushBindRequestBody
+import com.shifen.game.jfcz.restart.CrashHandler
 import com.shifen.game.jfcz.services.PushService
 import com.shifen.game.jfcz.services.ServiceManager
+import com.shifen.game.jfcz.ui.ADActivity
+import com.shifen.game.jfcz.ui.ErrorDialog
 import com.shifen.game.jfcz.utils.*
 import com.tbtech.serial.SerialOperate
 import com.umeng.commonsdk.UMConfigure
@@ -25,18 +30,20 @@ class JFCZApplication : Application() {
 
     companion object {
         lateinit var INSTANCE: JFCZApplication;
-        lateinit var serialOperate: SerialOperate
         var response = Vector<Byte>()
+        lateinit var serialOperate: SerialOperate
     }
 
     val DEVICE_ID by lazy { getIMEI(this) }
     val compositeDisposable = CompositeDisposable()
-
     override fun onCreate() {
         super.onCreate()
         INSTANCE = this
+        val crashHandler = CrashHandler.getInstance()
+        crashHandler.init(applicationContext)
+
         initUM()
-        //initTB()
+        initTB()
         ConfigManager.init(this)
         ApiConfig.token = getConfig().getString(APP_TOKEN, "")!!
         ApiConfig.containerId = getConfig().getString(CONTAINER_ID, "")!!
@@ -64,19 +71,33 @@ class JFCZApplication : Application() {
                 val gson = Gson()
                 val json = gson.toJson(pushBindRequestBody)
                 val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
-                compositeDisposable.add(ServiceManager.create(PushService::class.java).bind(body)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe {
-                            Log.i("JFCZApplication", "bind result: $it")
-                        })
+                bindDevice(body);
             }
-
             override fun onFailure(p0: String, p1: String) {
                 Log.d("JFCZApplication", "um register failed!")
             }
         })
     }
 
+    private fun bindDevice(body: RequestBody) {
+        compositeDisposable.add(ServiceManager.create(PushService::class.java).bind(body)
+                .subscribeOn(Schedulers.io())
+                .subscribe ({
+                    Log.i("JFCZApplication", "bind result: $it")
+                },{
+                    Log.i("JFCZApplication", "bind result error: ${it.message}")
+                    //JFCZError()
+                })
+        )
+    }
+
+    fun JFCZError(){
+        val tips = "无法连接网络"//JFCZApplication.INSTANCE.getString(R.string.network_invalid)
+        JFCZApplication.INSTANCE.startActivity(Intent(INSTANCE, ErrorDialog::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            putExtra(ErrorDialog.TIPS_KEY, tips)
+        })
+    }
 
 
     fun initTB() {
@@ -111,6 +132,9 @@ class JFCZApplication : Application() {
     }
 
     fun sendData(bytes: ByteArray) {
+        if (serialOperate==null) {
+            return
+        }
         Log.i("JFCZApplication", "=======sendData==========")
         Log.i("JFCZApplication", bytesToHexString(bytes))
         serialOperate.sendData(bytes)

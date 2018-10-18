@@ -15,12 +15,16 @@ import android.view.animation.AnimationSet
 import android.view.animation.TranslateAnimation
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.gson.Gson
 import com.shifen.game.jfcz.ConfigManager
+import com.shifen.game.jfcz.JFCZApplication
 import com.shifen.game.jfcz.R
 import com.shifen.game.jfcz.model.GameConfig
-import com.shifen.game.jfcz.services.GameService
-import com.shifen.game.jfcz.services.ServiceManager
-import com.shifen.game.jfcz.services.observeOnMain
+import com.shifen.game.jfcz.model.Goods
+import com.shifen.game.jfcz.model.PushBindRequestBody
+import com.shifen.game.jfcz.model.updateGoodsBody
+import com.shifen.game.jfcz.services.*
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_game.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -52,7 +56,6 @@ class GameActivity : AppCompatActivity() {
 
     private var countDownTimer = createCountDownTimer()
     private var countDownTimerFailure: CountDownTimer? = null
-
     // intent
     companion object {
         val KEY_GIRD_ID = "KEY_GIRD_ID"
@@ -314,6 +317,7 @@ class GameActivity : AppCompatActivity() {
             btnGameFinish.visibility = View.VISIBLE
             tvCountDownTimeFailure.visibility = View.GONE
             btnGameFinish.setImageResource(R.drawable.bg_btn_win)
+            updateGoods()
         } else {
             updateGameStatus(2)
 
@@ -339,7 +343,6 @@ class GameActivity : AppCompatActivity() {
             countDownTimerFailure?.start()
         }
     }
-
     override fun onStop() {
         super.onStop()
         countDownTimerFailure?.cancel()
@@ -392,6 +395,24 @@ class GameActivity : AppCompatActivity() {
         ServiceManager.create(GameService::class.java).newGameStatus(body).observeOnMain {}
     }
 
+    fun updateGoods(){
+
+        val updateGoodsBodyRequestBody = updateGoodsBody(mGirdId, mGoodsId)
+        val gson = Gson()
+        val json = gson.toJson(updateGoodsBodyRequestBody)
+
+        val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
+       ServiceManager.create(GoodsService::class.java).updateGoods(body)
+                .wrapLogin()
+                .subscribeOn(Schedulers.io())
+                .subscribe ({},{
+                    Log.i("JFCZApplication","ganme sussess error: ${it.message}")
+                })
+        // TODO("打开货柜，上报")
+        var app : JFCZApplication = application as JFCZApplication
+        app.checkGoodsNum(1);
+
+    }
 }
 
 

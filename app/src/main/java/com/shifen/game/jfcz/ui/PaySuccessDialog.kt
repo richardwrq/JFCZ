@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.dialog_pay_success.*
 class PaySuccessDialog : Activity() {
 
     companion object {
-        val SESSION_ID_KEY = "session_id_key"
+        // val SESSION_ID_KEY = "session_id_key"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +26,7 @@ class PaySuccessDialog : Activity() {
         Glide.with(this).load(goods.pictureUrl).into(ivGift)
         tvGiftName.text = getString(R.string.pay_success_tips, goods.description)
 
-        tvOrderNumber.text = getString(R.string.order_id, intent.getStringExtra(SESSION_ID_KEY))
+        tvOrderNumber.text = getString(R.string.order_id, intent.getStringExtra(PayActivity.SESSION_ID_KEY))
 
         btnFinish.setOnClickListener { finish() }
     }

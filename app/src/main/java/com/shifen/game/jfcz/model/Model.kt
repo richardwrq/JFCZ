@@ -236,3 +236,5 @@ data class OrderStatusRequestBody(val t: Long, val transferId: String)
  * @constructor
  */
 data class PushBindRequestBody(val deviceId: String, val deviceToken: String)
+
+data class updateGoodsBody(var gridId:String,var goodsId:String)

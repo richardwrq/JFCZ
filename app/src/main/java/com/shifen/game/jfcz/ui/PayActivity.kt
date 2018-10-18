@@ -37,6 +37,7 @@ class PayActivity : BaseActivity() {
 
     companion object {
         val GOODS_KEY = "GOODS_KEY"
+        var SESSION_ID_KEY="session_id_key"
         val BUY_TYPE = "buy_type"
 
         val BUY = 0
@@ -87,30 +88,28 @@ class PayActivity : BaseActivity() {
                                         editor.putString(GAME_SESSION_ID, res.data.gameSessionId)
                                     }
                                     disposables.dispose()
-
+                                    finish();
                                     startActivity(Intent(this, PaySuccessDialog::class.java).apply {
-                                        putExtra(GOODS_KEY, goods)
-                                        putExtra(PaySuccessDialog.SESSION_ID_KEY, res.data.gameSessionId)
+                                        putExtra(PayActivity.GOODS_KEY, goods)
+                                        putExtra(PayActivity.SESSION_ID_KEY, res.data.gameSessionId)
                                         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                     })
 
-                                    /*ServiceManager.create(GoodsService::class.java).updateGoods(goods.gridId, goods.goodsId)
-                                            .wrapLogin()
-                                            .subscribeOn(Schedulers.io())
-                                            .subscribe { }*/
                                     // TODO("打开货柜，上报")
-
                                     var app : JFCZApplication = application as JFCZApplication
                                     app.checkGoodsNum(1);
                                 } else if (type == GAME) {
+                                    disposables.dispose()
+                                    finish();
                                     startActivity(Intent(this, GameActivity::class.java).apply {
+                                        putExtra(PayActivity.GOODS_KEY, goods)
+                                        putExtra(PayActivity.SESSION_ID_KEY, res.data.gameSessionId)
                                         putExtra(GameActivity.KEY_GIRD_ID, goods.gridId)
                                         putExtra(GameActivity.KEY_GOODS_ID, goods.goodsId)
                                         putExtra(GameActivity.KEY_USER_ID, res.data.userId)
                                         putExtra(GameActivity.KEY_SESSION_ID, res.data.gameSessionId)
                                         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                     })
-                                    disposables.dispose()
                                 }
                             }, onError = { t ->
                                 t.printStackTrace()
