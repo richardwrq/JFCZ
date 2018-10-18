@@ -408,7 +408,7 @@ class GameActivity : AppCompatActivity() {
         val currentGiftNumber = intent.getIntExtra(PayActivity.GIFT_KEY,-1)
         // TODO("打开货柜，上报")
         var app : JFCZApplication = application as JFCZApplication
-        app.checkGoodsNum(currentGiftNumber);
+        app.deliverGoods(currentGiftNumber);
 
     }
 }

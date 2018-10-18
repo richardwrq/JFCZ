@@ -155,6 +155,7 @@ class JFCZApplication : Application() {
                 status= 1
             }
             var number = msg[4].toInt()
+            // todo
             number =8
             val operateStatusBody = operateStatusBody(number,status)
             val gson = Gson()
@@ -171,6 +172,8 @@ class JFCZApplication : Application() {
      */
     fun deliverGoods(num: Int) {
         Log.i("JFCZApplication","deliverGoods: ${num}")
+        // todo
+        var num =8
         val byte0 = 52;
         val byte1 = num;
         val byteArrayOf = byteArrayOf(byte0.toByte(), byte1.toByte())
