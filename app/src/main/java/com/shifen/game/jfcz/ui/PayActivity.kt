@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.shifen.game.jfcz.JFCZApplication
 import com.shifen.game.jfcz.R
+import com.shifen.game.jfcz.model.Gift
 import com.shifen.game.jfcz.model.Goods
 import com.shifen.game.jfcz.model.OrderStatusRequestBody
 import com.shifen.game.jfcz.services.*
@@ -29,13 +30,14 @@ class PayActivity : BaseActivity() {
 
     private var type: Int = -1
     private lateinit var goods: Goods
-
+    private lateinit var gift: Gift
     private val orderStatusInterval = 2L
     private val qrCodeRefreshInterval = 70L
 
     private val disposables = CompositeDisposable()
 
     companion object {
+        val GIFT_KEY="GIFT_KEY"
         val GOODS_KEY = "GOODS_KEY"
         var SESSION_ID_KEY="session_id_key"
         val BUY_TYPE = "buy_type"
@@ -51,6 +53,7 @@ class PayActivity : BaseActivity() {
     }
 
     private fun init() {
+        gift = intent.getParcelableExtra(GIFT_KEY)
         goods = intent.getParcelableExtra(GOODS_KEY)
         type  = intent.getIntExtra(BUY_TYPE, -1)
 
@@ -97,12 +100,12 @@ class PayActivity : BaseActivity() {
 
                                     // TODO("打开货柜，上报")
                                     var app : JFCZApplication = application as JFCZApplication
-                                    app.checkGoodsNum(1);
+                                    app.deliverGoods(gift.number.toInt());
                                 } else if (type == GAME) {
                                     disposables.dispose()
                                     finish();
                                     startActivity(Intent(this, GameActivity::class.java).apply {
-                                        putExtra(PayActivity.GOODS_KEY, goods)
+                                        putExtra(PayActivity.GIFT_KEY, gift)
                                         putExtra(PayActivity.SESSION_ID_KEY, res.data.gameSessionId)
                                         putExtra(GameActivity.KEY_GIRD_ID, goods.gridId)
                                         putExtra(GameActivity.KEY_GOODS_ID, goods.goodsId)

@@ -19,10 +19,7 @@ import com.google.gson.Gson
 import com.shifen.game.jfcz.ConfigManager
 import com.shifen.game.jfcz.JFCZApplication
 import com.shifen.game.jfcz.R
-import com.shifen.game.jfcz.model.GameConfig
-import com.shifen.game.jfcz.model.Goods
-import com.shifen.game.jfcz.model.PushBindRequestBody
-import com.shifen.game.jfcz.model.updateGoodsBody
+import com.shifen.game.jfcz.model.*
 import com.shifen.game.jfcz.services.*
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_game.*
@@ -400,7 +397,6 @@ class GameActivity : AppCompatActivity() {
         val updateGoodsBodyRequestBody = updateGoodsBody(mGirdId, mGoodsId)
         val gson = Gson()
         val json = gson.toJson(updateGoodsBodyRequestBody)
-
         val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
        ServiceManager.create(GoodsService::class.java).updateGoods(body)
                 .wrapLogin()
@@ -408,9 +404,11 @@ class GameActivity : AppCompatActivity() {
                 .subscribe ({},{
                     Log.i("JFCZApplication","ganme sussess error: ${it.message}")
                 })
+
+        val gift = intent.getParcelableExtra<Gift>(PayActivity.GIFT_KEY)
         // TODO("打开货柜，上报")
         var app : JFCZApplication = application as JFCZApplication
-        app.checkGoodsNum(1);
+        app.checkGoodsNum(gift.number.toInt());
 
     }
 }

@@ -159,9 +159,6 @@ interface GoodsService {
 
     @POST("/sale/game-pass/update/goods-lib")
     fun updateGoods(@Body requestBody: RequestBody): Observable<Response<String>>
-    //fun updateGoods(@Query("gridId") gridId: String, @Query("goodsId") goodsId: String): Observable<Response<String>>
-
-
 }
 
 interface ConfigService {
@@ -182,6 +179,16 @@ interface GameService {
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST("/sale/update/game-status")
     fun updateGameStatus(@Body json: RequestBody): Observable<Response<String>>
+
+}
+
+interface OperateService {
+
+    // 柜子锁操作
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST("/sale/operate/grid")
+    fun operateStatus(@Body json: RequestBody): Observable<Response<String>>
+
 
 }
 
