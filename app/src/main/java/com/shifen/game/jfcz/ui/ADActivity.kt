@@ -47,6 +47,7 @@ class ADActivity : BaseActivity()  {
                 .start()
 
         banner.setOnBannerListener {
+            stopTimer()
             startActivity(Intent(this, GiftListActivity::class.java))
         }
 
@@ -73,10 +74,6 @@ class ADActivity : BaseActivity()  {
                 })
     }
 
-    override fun onResume() {
-        super.onResume()
-        stopTimer()
-    }
 
     override fun onDestroy() {
         super.onDestroy()
