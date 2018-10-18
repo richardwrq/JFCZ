@@ -8,6 +8,7 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.shifen.game.jfcz.ConfigManager
 import com.shifen.game.jfcz.R
+import com.shifen.game.jfcz.model.Gift
 import com.shifen.game.jfcz.model.Goods
 import com.shifen.game.jfcz.services.GiftService
 import com.shifen.game.jfcz.services.ServiceManager
@@ -19,6 +20,8 @@ import kotlinx.android.synthetic.main.activity_gift_list.*
 class GiftListActivity : BaseActivity() {
 
     private var currentGoods: Goods? = null
+
+    private var currentGift:Gift?=null
     private val adapter = GiftListAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +40,7 @@ class GiftListActivity : BaseActivity() {
         rvGiftList.adapter = adapter
 
         adapter.onItemClickListener = { _, position ->
-
+            currentGift = adapter.getItem(position)
             currentGoods = adapter.getItem(position).goodsList[0]
             tvGiftName.text = currentGoods?.description
             tvGiftNumber.text = getString(R.string.choose_gift, currentGoods?.id)
@@ -51,8 +54,10 @@ class GiftListActivity : BaseActivity() {
                 Toast.makeText(this, getString(R.string.pls_choose_gift), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
             startActivity(Intent(this, PayActivity::class.java).apply {
                 putExtra(PayActivity.GOODS_KEY, currentGoods)
+                putExtra(PayActivity.GIFT_KEY, currentGift)
                 putExtra(PayActivity.BUY_TYPE, PayActivity.BUY)
             })
         }
