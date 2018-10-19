@@ -1,5 +1,6 @@
 package com.shifen.game.jfcz.ui
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
@@ -15,6 +16,7 @@ import com.shifen.game.jfcz.services.ServiceManager
 import com.shifen.game.jfcz.services.observeOnMain
 import com.shifen.game.jfcz.ui.adapter.GiftListAdapter
 import com.shifen.game.jfcz.utils.MDGridRvDividerDecoration
+import com.shifen.game.jfcz.utils.WeiboDialogUtils
 import kotlinx.android.synthetic.main.activity_gift_list.*
 
 class GiftListActivity : BaseActivity() {
@@ -23,6 +25,9 @@ class GiftListActivity : BaseActivity() {
 
     private var currentGiftNumber:Int = 0
     private val adapter = GiftListAdapter()
+
+    private var mWeiboDialog: Dialog? = null
+    private val scanningStr = "正在扫描..."
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,16 +85,18 @@ class GiftListActivity : BaseActivity() {
     }
 
     private fun questGiftList() {
-        val list = ConfigManager.getGiftList()
+        /*val list = ConfigManager.getGiftList()
         if (list.isNotEmpty()) {
             adapter.setItems(list)
             return
-        }
+        }*/
+        mWeiboDialog = WeiboDialogUtils.createLoadingDialog(this, scanningStr);
         ServiceManager.create(GiftService::class.java)
                 .getGiftList()
                 .observeOnMain {
                     adapter.setItems(it.data)
-                    ConfigManager.updateGiftList(it.data)
+                    //ConfigManager.updateGiftList(it.data)
+                    WeiboDialogUtils.closeDialog(mWeiboDialog)
                 }
     }
 
