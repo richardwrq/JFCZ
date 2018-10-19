@@ -1,5 +1,6 @@
 package com.shifen.game.jfcz.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
@@ -16,7 +17,8 @@ class GiftListAdapter : BaseAdapter<Gift, BaseViewHolder>() {
 
     override fun onBindViewHolder(p0: BaseViewHolder, p1: Int) {
         super.onBindViewHolder(p0, p1)
-        (p0.itemView as Button).text = list[p1].goodsList[0].id.toString()
+        (p0.itemView as Button).text = list[p1].number.toString()
         p0.itemView.isEnabled = list[p1].status != 2
+        p0.itemView.isEnabled = list[p1].goodsList[0].count> 0
     }
 }
