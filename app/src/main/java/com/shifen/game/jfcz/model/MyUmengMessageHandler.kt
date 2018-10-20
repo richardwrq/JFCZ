@@ -12,6 +12,8 @@ import com.umeng.message.UmengMessageHandler
 import com.umeng.message.entity.UMessage
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONObject
 
 class MyUmengMessageHandler : UmengMessageHandler() {
 
@@ -35,7 +37,33 @@ class MyUmengMessageHandler : UmengMessageHandler() {
     override fun dealWithCustomMessage(p0: Context, p1: UMessage) {
         super.dealWithCustomMessage(p0, p1)
         Log.d("MyUmengMessageHandler", "receive custom message: ${p1.custom}")
-        if (p1.extra["type"] == "1") {
+
+        val jsonObj: JSONObject = JSONObject(p1.custom)
+        var type=jsonObj.getInt("type")
+
+        if (type ==1){
+            ServiceManager.create(BannerService::class.java)
+                    .getBannerList()
+                    .observeOnMain(onNext = { res ->
+                        ConfigManager.updateBannerList(res.data)
+                    }, onError = {
+                        it.printStackTrace()
+                    })
+
+        }
+
+        if (type ==3){
+
+            ServiceManager.create(GameService::class.java)
+                    .getGameConfig()
+                    .observeOnMain(onNext = {res->
+                        ConfigManager.updateGameConfig(res.data)
+                    },onError = {
+                        it.printStackTrace()
+                    })
+        }
+
+    /*    if (p1.extra["type"] == "1") {
             ServiceManager.create(ConfigService::class.java)
                     .getConfig()
                     .wrapLogin()
@@ -87,6 +115,6 @@ class MyUmengMessageHandler : UmengMessageHandler() {
 //            if (!images.isNullOrBlank()) {
 //                it.putString(BANNER_LIST, images)
 //                LocalBroadcastManager.getInstance(p0).sendBroadcast(Intent(ADActivity.ACTION_REFRESH_BANNER))
-//            }
+//            }*/
     }
 }
