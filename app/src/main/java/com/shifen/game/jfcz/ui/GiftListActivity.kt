@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.text.Html
+import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
-import com.shifen.game.jfcz.ConfigManager
 import com.shifen.game.jfcz.R
 import com.shifen.game.jfcz.model.Gift
 import com.shifen.game.jfcz.model.Goods
@@ -16,14 +16,16 @@ import com.shifen.game.jfcz.services.ServiceManager
 import com.shifen.game.jfcz.services.observeOnMain
 import com.shifen.game.jfcz.ui.adapter.GiftListAdapter
 import com.shifen.game.jfcz.utils.MDGridRvDividerDecoration
-import com.shifen.game.jfcz.utils.WeiboDialogUtils
 import kotlinx.android.synthetic.main.activity_gift_list.*
 
 class GiftListActivity : BaseActivity() {
 
     private var currentGoods: Goods? = null
 
-    private var currentGiftNumber:Int = 0
+    private var currentGiftNumber:Int = -1
+    private var oldInx = -1;
+    private lateinit var list:List<Gift>;
+
     private val adapter = GiftListAdapter()
 
     private var mWeiboDialog: Dialog? = null
@@ -37,7 +39,6 @@ class GiftListActivity : BaseActivity() {
 
         questGiftList()
     }
-
     private fun init() {
         rvGiftList.layoutManager = GridLayoutManager(this, 5)
         rvGiftList.addItemDecoration(MDGridRvDividerDecoration(this))
@@ -45,13 +46,26 @@ class GiftListActivity : BaseActivity() {
         rvGiftList.adapter = adapter
 
         adapter.onItemClickListener = { _, position ->
-            currentGiftNumber = adapter.getItem(position).number.toInt()
-            currentGoods = adapter.getItem(position).goodsList[0]
-            tvGiftName.text = currentGoods?.description
-            tvGiftNumber.text = getString(R.string.choose_gift, currentGoods?.id)
-            tvGiftPrice.text = Html.fromHtml(getString(R.string.gift_price_red, currentGoods?.price.toString()))
-            tvChallengePrice.text = Html.fromHtml(getString(R.string.gift_challenge_price_red, currentGoods?.gamePrice.toString()))
-            Glide.with(this).load(currentGoods?.pictureUrl).into(ivGift)
+
+            if (position >0){
+                currentGiftNumber = adapter.getItem(position).number.toInt()
+                currentGoods = adapter.getItem(position).goodsList[0]
+                tvGiftName.text = currentGoods?.description
+                tvGiftNumber.text = getString(R.string.choose_gift, currentGoods?.id)
+                tvGiftPrice.text = Html.fromHtml(getString(R.string.gift_price_red, currentGoods?.price.toString()))
+                tvChallengePrice.text = Html.fromHtml(getString(R.string.gift_challenge_price_red, currentGoods?.gamePrice.toString()))
+                Glide.with(this).load(currentGoods?.pictureUrl).into(ivGift)
+
+
+                if (list.get(position).status ==0){
+                    if (oldInx!=-1 && oldInx < list.size &&list.get(oldInx).status ==100) {
+                        list.get(oldInx).status =0
+                    }
+                    oldInx =position
+                    list.get(position).status =100
+                }
+                adapter.notifyDataSetChanged()
+            }
         }
 
         btnBuy.setOnClickListener {
@@ -83,20 +97,14 @@ class GiftListActivity : BaseActivity() {
             onNoOperation();
         }
     }
-
     private fun questGiftList() {
-        /*val list = ConfigManager.getGiftList()
-        if (list.isNotEmpty()) {
-            adapter.setItems(list)
-            return
-        }*/
-        mWeiboDialog = WeiboDialogUtils.createLoadingDialog(this, scanningStr);
+        GiftAddProgressBar.setVisibility(View.VISIBLE);
         ServiceManager.create(GiftService::class.java)
                 .getGiftList()
                 .observeOnMain {
                     adapter.setItems(it.data)
-                    //ConfigManager.updateGiftList(it.data)
-                    WeiboDialogUtils.closeDialog(mWeiboDialog)
+                    list =it.data
+                    GiftAddProgressBar.setVisibility(View.INVISIBLE)
                 }
     }
 

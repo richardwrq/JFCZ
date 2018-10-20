@@ -7,10 +7,7 @@ import android.content.pm.PackageManager
 import android.os.CountDownTimer
 import android.util.Log
 import com.google.gson.Gson
-import com.shifen.game.jfcz.model.MyUmengMessageHandler
-import com.shifen.game.jfcz.model.PushBindRequestBody
-import com.shifen.game.jfcz.model.operateStatusBody
-import com.shifen.game.jfcz.model.updateGoodsBody
+import com.shifen.game.jfcz.model.*
 import com.shifen.game.jfcz.restart.CrashHandler
 import com.shifen.game.jfcz.services.OperateService
 import com.shifen.game.jfcz.services.PushService
@@ -25,6 +22,7 @@ import com.umeng.message.IUmengRegisterCallback
 import com.umeng.message.MsgConstant
 import com.umeng.message.PushAgent
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import okhttp3.RequestBody
 import java.util.*
@@ -75,31 +73,13 @@ class JFCZApplication : Application() {
                 val gson = Gson()
                 val json = gson.toJson(pushBindRequestBody)
                 val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
-                bindDevice(body);
+                ServiceManager.create(PushService::class.java).bind(body)
+                        .observeOnMain{}
+
             }
             override fun onFailure(p0: String, p1: String) {
                 Log.d("JFCZApplication", "um register failed!")
             }
-        })
-    }
-
-    private fun bindDevice(body: RequestBody) {
-        compositeDisposable.add(ServiceManager.create(PushService::class.java).bind(body)
-                .subscribeOn(Schedulers.io())
-                .subscribe ({
-                    Log.i("JFCZApplication", "bind result: $it")
-                },{
-                    Log.i("JFCZApplication", "bind result error: ${it.message}")
-                    //JFCZError()
-                })
-        )
-    }
-
-    fun JFCZError(){
-        val tips = "无法连接网络"//JFCZApplication.INSTANCE.getString(R.string.network_invalid)
-        JFCZApplication.INSTANCE.startActivity(Intent(INSTANCE, ErrorDialog::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            putExtra(ErrorDialog.TIPS_KEY, tips)
         })
     }
 
