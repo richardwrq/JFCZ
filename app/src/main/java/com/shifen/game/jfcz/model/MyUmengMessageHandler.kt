@@ -44,11 +44,9 @@ class MyUmengMessageHandler : UmengMessageHandler() {
         if (type ==1){
             ServiceManager.create(BannerService::class.java)
                     .getBannerList()
-                    .observeOnMain(onNext = { res ->
-                        ConfigManager.updateBannerList(res.data)
-                    }, onError = {
-                        it.printStackTrace()
-                    })
+                    .observeOnMain{
+                        ConfigManager.updateBannerList(it.data)
+                    }
 
         }
 
@@ -56,11 +54,9 @@ class MyUmengMessageHandler : UmengMessageHandler() {
 
             ServiceManager.create(GameService::class.java)
                     .getGameConfig()
-                    .observeOnMain(onNext = {res->
-                        ConfigManager.updateGameConfig(res.data)
-                    },onError = {
-                        it.printStackTrace()
-                    })
+                    .observeOnMain{
+                        ConfigManager.updateGameConfig(it.data)
+                    }
         }
 
     /*    if (p1.extra["type"] == "1") {
