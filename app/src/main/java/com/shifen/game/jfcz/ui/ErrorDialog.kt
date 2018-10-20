@@ -37,6 +37,9 @@ class ErrorDialog : Activity() {
         return super.dispatchTouchEvent(ev)
     }
 
+    override fun onAttachedToWindow() {
+        hideBottomUIMenu()
+    }
     /**
      * 隐藏虚拟按键，并且全屏
      */
