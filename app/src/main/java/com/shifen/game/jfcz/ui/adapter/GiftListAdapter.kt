@@ -1,10 +1,8 @@
 package com.shifen.game.jfcz.ui.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.RadioButton
 import com.shifen.game.jfcz.R
 import com.shifen.game.jfcz.model.Gift
 import com.shifen.game.jfcz.ui.viewholder.BaseViewHolder

@@ -1,20 +1,15 @@
 package com.shifen.game.jfcz
 
 import android.app.Application
-import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.os.CountDownTimer
 import android.util.Log
 import com.google.gson.Gson
 import com.shifen.game.jfcz.model.*
-import com.shifen.game.jfcz.restart.CrashHandler
 import com.shifen.game.jfcz.services.OperateService
 import com.shifen.game.jfcz.services.PushService
 import com.shifen.game.jfcz.services.ServiceManager
 import com.shifen.game.jfcz.services.observeOnMain
-import com.shifen.game.jfcz.ui.ADActivity
-import com.shifen.game.jfcz.ui.ErrorDialog
 import com.shifen.game.jfcz.utils.*
 import com.tbtech.serial.SerialOperate
 import com.umeng.commonsdk.UMConfigure
@@ -22,8 +17,6 @@ import com.umeng.message.IUmengRegisterCallback
 import com.umeng.message.MsgConstant
 import com.umeng.message.PushAgent
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.observers.DisposableObserver
-import io.reactivex.schedulers.Schedulers
 import okhttp3.RequestBody
 import java.util.*
 
