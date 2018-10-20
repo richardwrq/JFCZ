@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v7.app.AppCompatActivity
@@ -410,6 +411,27 @@ class GameActivity : AppCompatActivity() {
         var app : JFCZApplication = application as JFCZApplication
         app.deliverGoods(currentGiftNumber);
 
+    }
+
+
+
+    override fun onAttachedToWindow() {
+        hideBottomUIMenu()
+    }
+
+    /**
+     * 隐藏虚拟按键，并且全屏
+     */
+    private fun hideBottomUIMenu() {
+        //隐藏虚拟按键，并且全屏
+        val decorView = window.decorView
+        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+            decorView.systemUiVisibility = View.GONE
+        } else if (Build.VERSION.SDK_INT >= 19) {
+            //for new api versions.
+            val uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN
+            decorView.systemUiVisibility = uiOptions;
+        }
     }
 }
 
