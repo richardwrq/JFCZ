@@ -45,7 +45,7 @@ class JFCZApplication : Application() {
 
             override fun onTick(millisUntilFinished: Long) {
                 //do nothing
-                DeviceHelp.deliverGoods(1)
+                DeviceHelp.deliverGoods(0)
             }
         }
         countDownTimer.start()
