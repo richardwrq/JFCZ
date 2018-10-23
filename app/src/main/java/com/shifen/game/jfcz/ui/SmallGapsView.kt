@@ -157,16 +157,19 @@ class SmallGapsView @JvmOverloads constructor(
         }
         curTime = System.currentTimeMillis()
     }
-
-
     open fun lastKnife (){
-
         var ret =binarysearchKey(knifeArray, curAngle)
-        Log.i("aaaok","数组 ${knifeArray.toString()}  要查找的数：" + curAngle + "最接近的数：" + ret)
-        curAngle =ret
+
+        if (enableReverse){
+            curAngle= ret +5f
+        }else{
+            curAngle= ret -5f
+        }
+
     }
 
     fun binarysearchKey(a: ArrayList<Float>, targetNum: Float): Float {
+        Log.i("aaaok","数组 ${a.toString()} enableReverse = ${enableReverse} targetNum = ${targetNum}")
         var array = ArrayList<Float>()
         a.forEach {
             array.add(it)
@@ -177,8 +180,6 @@ class SmallGapsView @JvmOverloads constructor(
         array.add(start)
         array.add(end)
         Collections.sort(array)
-        Log.i("aaaok","数组 ${array.toString()} enableReverse = ${enableReverse} ")
-        println(array)
         var mid =0f
         mid  = Math.abs(array[0])
         var targetindex = 0
@@ -189,16 +190,22 @@ class SmallGapsView @JvmOverloads constructor(
                 targetindex = i
             }
         }
+
+        if(targetindex ==0){
+            return array[array.size-2]
+        }
+
+        if(targetindex ==array.size-1){
+            return array[1]
+        }
         var ret =array[targetindex]
         ret =ret%360f
-        if (enableReverse) {
-            if (ret > 0){ ret = -ret}
-            ret =ret +4f
-        }else if (!enableReverse){
-            if (  ret <0){ret = -ret}
-            ret =ret -4f
-        }
-        return ret
+        a.forEach({
+            if (Math.abs(it) == Math.abs(ret)){
+                return it
+            }
+        })
+        return a[0]
     }
 }
 

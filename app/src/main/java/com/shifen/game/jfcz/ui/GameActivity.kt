@@ -62,15 +62,15 @@ class GameActivity : AppCompatActivity() {
         val KEY_SESSION_ID = "KEY_SESSION_ID"
     }
 
-    private var mGirdId = ""
+    /*private var mGirdId = ""
     private var mUserId = ""
     private var mGoodsId = ""
-    private var mSessionId = ""
+    private var mSessionId = ""*/
 
-//    private var mGirdId = "0000000000000001"
-//    private var mUserId = "wx3453645756345d535"
-//    private var mGoodsId = "0000000000001111"
-//    private var mSessionId = "1000000000000001"
+    private var mGirdId = "0000000000000001"
+    private var mUserId = "wx3453645756345d535"
+    private var mGoodsId = "0000000000001111"
+    private var mSessionId = "1000000000000001"
 
     init {
         val animation1 = AlphaAnimation(0f, 1f)
@@ -96,12 +96,13 @@ class GameActivity : AppCompatActivity() {
             override fun onAnimationEnd(p0: Animation?) {
                 isFailure = !game.addKnife()
                 waitKnifeNum--
-                if (waitKnifeNum < 0 ) return;
+                if (waitKnifeNum < 0) {
+                    return;
+                }
                 tvWaitKnifeNum.text = waitKnifeNum.toString()
                 waitKnifeViews[waitKnifeNum].visibility = View.INVISIBLE
-
                 if (isFailure) {
-                    updateGameResultView(false)
+                     updateGameResultView(false)
                 } else {
                     ivStar1.startAnimation(ivStar1AnimationSet)
                     game.postDelayed({
@@ -122,6 +123,12 @@ class GameActivity : AppCompatActivity() {
             }
 
             override fun onAnimationStart(p0: Animation?) {
+                if (waitKnifeNum == 1 && curRoundIndex == 2) {
+                    if (waitKnifeNum ==1){
+                        game.lastKnife()
+                    }
+                }
+
             }
         })
 
@@ -343,6 +350,7 @@ class GameActivity : AppCompatActivity() {
     }
     override fun onStop() {
         super.onStop()
+        game.stop()
         countDownTimerFailure?.cancel()
         countDownTimer.cancel()
     }
@@ -400,11 +408,7 @@ class GameActivity : AppCompatActivity() {
         val json = gson.toJson(updateGoodsBodyRequestBody)
         val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
        ServiceManager.create(GoodsService::class.java).updateGoods(body)
-                .wrapLogin()
-                .subscribeOn(Schedulers.io())
-                .subscribe ({},{
-                    Log.i("JFCZApplication","ganme sussess error: ${it.message}")
-                })
+               .observeOnMain{}
 
         val currentGiftNumber = intent.getIntExtra(PayActivity.GIFT_KEY,-1)
         // TODO("打开货柜，上报")
