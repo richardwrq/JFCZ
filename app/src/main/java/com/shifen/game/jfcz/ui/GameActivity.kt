@@ -22,6 +22,7 @@ import com.shifen.game.jfcz.JFCZApplication
 import com.shifen.game.jfcz.R
 import com.shifen.game.jfcz.model.*
 import com.shifen.game.jfcz.services.*
+import com.shifen.game.jfcz.usb.DeviceHelp
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_game.*
 import okhttp3.MediaType
@@ -401,19 +402,18 @@ class GameActivity : AppCompatActivity() {
         ServiceManager.create(GameService::class.java).newGameStatus(body).observeOnMain {}
     }
 
-    fun updateGoods(){
+    fun updateGoods() {
 
         val updateGoodsBodyRequestBody = updateGoodsBody(mGirdId, mGoodsId)
         val gson = Gson()
         val json = gson.toJson(updateGoodsBodyRequestBody)
         val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
-       ServiceManager.create(GoodsService::class.java).updateGoods(body)
-               .observeOnMain{}
+        ServiceManager.create(GoodsService::class.java).updateGoods(body)
+                .observeOnMain {}
 
-        val currentGiftNumber = intent.getIntExtra(PayActivity.GIFT_KEY,-1)
+        val currentGiftNumber = intent.getIntExtra(PayActivity.GIFT_KEY, -1)
         // TODO("打开货柜，上报")
-        var app : JFCZApplication = application as JFCZApplication
-        app.deliverGoods(currentGiftNumber);
+        DeviceHelp.deliverGoods(currentGiftNumber)
 
     }
 

@@ -55,12 +55,6 @@ class ADActivity : BaseActivity()  {
     }
 
     private fun questBannerList() {
-        val list = ConfigManager.getBannerList()
-        if (list.isNotEmpty()) {
-            bannerList = list
-            banner.update(bannerList.map { it.url })
-            return
-        }
         ServiceManager.create(BannerService::class.java)
                 .getBannerList()
                 .observeOnMain(onNext = { res ->

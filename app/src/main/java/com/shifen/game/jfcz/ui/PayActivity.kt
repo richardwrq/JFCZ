@@ -11,6 +11,7 @@ import com.shifen.game.jfcz.model.Gift
 import com.shifen.game.jfcz.model.Goods
 import com.shifen.game.jfcz.model.OrderStatusRequestBody
 import com.shifen.game.jfcz.services.*
+import com.shifen.game.jfcz.usb.DeviceHelp
 import com.shifen.game.jfcz.utils.ApiConfig
 import com.shifen.game.jfcz.utils.GAME_SESSION_ID
 import com.shifen.game.jfcz.utils.USER_ID
@@ -99,8 +100,8 @@ class PayActivity : BaseActivity() {
                                     })
 
                                     // TODO("打开货柜，上报")
-                                    var app : JFCZApplication = application as JFCZApplication
-                                    app.deliverGoods(currentGiftNumber);
+                                    DeviceHelp.deliverGoods(currentGiftNumber)
+
                                 } else if (type == GAME) {
                                     disposables.dispose()
                                     finish();
