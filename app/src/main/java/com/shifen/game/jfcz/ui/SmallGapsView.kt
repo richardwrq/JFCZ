@@ -28,7 +28,7 @@ class SmallGapsView @JvmOverloads constructor(
     // 速度，单位：度／秒
     var speed = 100
     // 是否开启正反转
-    var enableReverse = true
+    var enableReverse = false
         set (value) {
             if (value != field) {
                 updateCurAngle()
@@ -162,8 +162,8 @@ class SmallGapsView @JvmOverloads constructor(
     open fun lastKnife (){
 
         var ret =binarysearchKey(knifeArray, curAngle)
-        Log.i("aaa","数组 ${knifeArray.toString()}  要查找的数：" + curAngle + "最接近的数：" + ret)
-        curAngle =ret +4f
+        Log.i("aaaok","数组 ${knifeArray.toString()}  要查找的数：" + curAngle + "最接近的数：" + ret)
+        curAngle =ret
     }
 
     fun binarysearchKey(a: ArrayList<Float>, targetNum: Float): Float {
@@ -171,13 +171,13 @@ class SmallGapsView @JvmOverloads constructor(
         a.forEach {
             array.add(it)
         }
-
         Collections.sort(array)
         var start = array[array.size-1]-360f
         var end = array[0]+360f
         array.add(start)
         array.add(end)
         Collections.sort(array)
+        Log.i("aaaok","数组 ${array.toString()} enableReverse = ${enableReverse} ")
         println(array)
         var mid =0f
         mid  = Math.abs(array[0])
@@ -190,15 +190,15 @@ class SmallGapsView @JvmOverloads constructor(
             }
         }
         var ret =array[targetindex]
-        if (!enableReverse) {
-            if (ret < 0) { ret=ret + 306f }
-            if (ret >360f) { ret=ret-360f }
-            return ret
-        }else{
-            if (ret < -360f) { ret=ret + 360f }
-            if (ret >0) { ret=ret-360f }
-            return ret
+        ret =ret%360f
+        if (enableReverse) {
+            if (ret > 0){ ret = -ret}
+            ret =ret +4f
+        }else if (!enableReverse){
+            if (  ret <0){ret = -ret}
+            ret =ret -4f
         }
+        return ret
     }
 }
 
