@@ -8,7 +8,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.shifen.game.jfcz"
-        minSdkVersion 23
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -41,6 +41,8 @@ android {
 
         debug {
             buildConfigField "String", "BASE_URL", "\"http://sale.jqit020.com\""
+            //buildConfigField "String", "BASE_URL", "\"http://testsale.emomo.cc\""
+
         }
 
         release {
@@ -81,8 +83,12 @@ dependencies {
     implementation 'com.umeng.sdk:utdid:1.1.5.3'
     implementation 'com.umeng.sdk:push:4.2.0'
 
+    // 串口
+    implementation 'com.github.licheedev.Android-SerialPort-API:serialport:1.0.1'
+    // eventbus
+    implementation 'org.greenrobot:eventbus:3.1.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation files('libs/TBSDK.jar')
+
 }
