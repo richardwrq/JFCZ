@@ -11,6 +11,7 @@ import com.shifen.game.jfcz.usb.util.ByteUtil;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 
 /**
@@ -65,9 +66,12 @@ public class SerialReadThread extends Thread {
      */
     private void onDataReceive(byte[] received, int size) {
         // TODO: 2018/3/22 解决粘包、分包等
-        String hexStr = ByteUtil.bytes2HexStr(received, 0, size);
-        Log.i("====",hexStr);
-        LogManager.instance().post(new RecvMessage(hexStr));
+        String hexStr = ByteUtil.bytes2HexStr(received);
+       // for ()
+        byte[] temp = new byte[size];
+        System.arraycopy(received, 0, temp, 0, size);
+        Log.i("JFCZApplication","hexStr ="+hexStr);
+        DeviceHelp.INSTANCE.update(temp);
     }
 
     /**

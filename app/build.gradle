@@ -40,8 +40,8 @@ android {
     buildTypes {
 
         debug {
-            buildConfigField "String", "BASE_URL", "\"http://sale.jqit020.com\""
-            //buildConfigField "String", "BASE_URL", "\"http://testsale.emomo.cc\""
+            //buildConfigField "String", "BASE_URL", "\"http://sale.jqit020.com\""
+            buildConfigField "String", "BASE_URL", "\"http://testsale.emomo.cc\""
 
         }
 

@@ -39,10 +39,33 @@ object DeviceHelp{
     }
 
 
+    private var BUFF_START:Byte = 0xF0.toByte();
+    private var BUFF_PHONE:Byte = 0xF2.toByte();
+    private var BUFF_OVER:Byte = 0xF1.toByte();
 
-    fun updateData(msg: ByteArray) {
+    var resArr = ArrayList<Byte>();
+    fun update(bytes: ByteArray) {
+        bytes.forEach {
+            resArr.add(it)
+        }
+
+        Log.i("JFCZApplication", "resArr = ${resArr.toString()}")
+        var tmp1 = resArr[resArr.size - 1];
+        if (tmp1 == BUFF_OVER) {
+            var last = resArr.lastIndexOf(BUFF_START);
+            var newArr = resArr.subList(last + 1, resArr.size - 1);
+            var tmp2 = newArr[0];
+            if (tmp2 == BUFF_PHONE) {
+                updateData(newArr)
+            }
+            resArr.clear()
+        }
+    }
+
+
+    fun updateData(msg: MutableList<Byte>) {
         Log.i("JFCZApplication", "=======onDataReceiveBuffListener==========")
-        Log.i("JFCZApplication", bytesToHexString(msg))
+        Log.i("JFCZApplication", bytesToHexString(msg.toByteArray()))
 
         if (msg[2] == 0x01.toByte() && msg[3] == 53.toByte()) {
 
