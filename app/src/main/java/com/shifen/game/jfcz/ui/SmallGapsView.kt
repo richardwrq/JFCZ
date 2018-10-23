@@ -5,8 +5,10 @@ import android.content.Context
 import android.graphics.*
 import android.os.CountDownTimer
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import com.shifen.game.jfcz.R
+import java.util.*
 
 /**
  * @author caizeming
@@ -26,7 +28,7 @@ class SmallGapsView @JvmOverloads constructor(
     // 速度，单位：度／秒
     var speed = 100
     // 是否开启正反转
-    var enableReverse = false
+    var enableReverse = true
         set (value) {
             if (value != field) {
                 updateCurAngle()
@@ -87,6 +89,10 @@ class SmallGapsView @JvmOverloads constructor(
         countDownTimer.start()
     }
 
+    fun stop(){
+        countDownTimer.cancel()
+    }
+
     /**
      * 增加小刀
      * @return Boolean 成功，失败
@@ -111,7 +117,6 @@ class SmallGapsView @JvmOverloads constructor(
         gameCanvas.drawBitmap(knifeBitmap, knifeMatrix, paint)
 
         gameCanvas.drawBitmap(centerBitmap, gameBitmapHalfWidth - centerBitmapHalfWidth, gameBitmapHalfHeight - centerBitmapHalfHeight, paint)
-
         return result
     }
 
@@ -151,6 +156,49 @@ class SmallGapsView @JvmOverloads constructor(
             (curAngle + (System.currentTimeMillis() - curTime) * speed / 1000) % 360
         }
         curTime = System.currentTimeMillis()
+    }
+
+
+    open fun lastKnife (){
+
+        var ret =binarysearchKey(knifeArray, curAngle)
+        Log.i("aaa","数组 ${knifeArray.toString()}  要查找的数：" + curAngle + "最接近的数：" + ret)
+        curAngle =ret +4f
+    }
+
+    fun binarysearchKey(a: ArrayList<Float>, targetNum: Float): Float {
+        var array = ArrayList<Float>()
+        a.forEach {
+            array.add(it)
+        }
+
+        Collections.sort(array)
+        var start = array[array.size-1]-360f
+        var end = array[0]+360f
+        array.add(start)
+        array.add(end)
+        Collections.sort(array)
+        println(array)
+        var mid =0f
+        mid  = Math.abs(array[0])
+        var targetindex = 0
+        for (i in array.indices){
+            var abs =Math.abs(array[i] - targetNum)
+            if (abs < mid){
+                mid=abs
+                targetindex = i
+            }
+        }
+        var ret =array[targetindex]
+        if (!enableReverse) {
+            if (ret < 0) { ret=ret + 306f }
+            if (ret >360f) { ret=ret-360f }
+            return ret
+        }else{
+            if (ret < -360f) { ret=ret + 360f }
+            if (ret >0) { ret=ret-360f }
+            return ret
+        }
     }
 }
 
