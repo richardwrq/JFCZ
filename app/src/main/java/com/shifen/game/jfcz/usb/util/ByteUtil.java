@@ -38,7 +38,27 @@ public class ByteUtil {
         }
         return builder.toString().toUpperCase();
     }
+    public static String bytes2HexStr2(byte[] src) {
+        StringBuilder stringBuilder = new StringBuilder("");
+        if (src == null || src.length <= 0) {
+            return null;
+        }
+        for (int i = 0; i < src.length; i++) {
+            int v = src[i] & 0xFF;
+            String hv = Integer.toHexString(v);
 
+            stringBuilder.append(" 0x");
+            if (hv.length() < 2) {
+                stringBuilder.append(0);
+                stringBuilder.append(hv);
+            }else{
+                stringBuilder.append(hv);
+            }
+
+            stringBuilder.append(hv);
+        }
+        return stringBuilder.toString();
+    }
     /**
      * 十六进制字节数组转字符串
      *
