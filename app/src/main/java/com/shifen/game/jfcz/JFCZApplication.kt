@@ -37,18 +37,17 @@ class JFCZApplication : Application() {
 
         initUM()
         DeviceHelp.initDevice()
-        //EventBus.register(this);
-        var countDownTimer = object : CountDownTimer(4 * 1000L, 2000L) {
+      /* var countDownTimer = object : CountDownTimer(6 * 1000L, 3000L) {
             override fun onFinish() {
 
             }
 
             override fun onTick(millisUntilFinished: Long) {
                 //do nothing
-                DeviceHelp.deliverGoods(0)
+                DeviceHelp.checkState(null)
             }
         }
-        countDownTimer.start()
+        countDownTimer.start()*/
 
         ConfigManager.init(this)
         ApiConfig.token = getConfig().getString(APP_TOKEN, "")!!
