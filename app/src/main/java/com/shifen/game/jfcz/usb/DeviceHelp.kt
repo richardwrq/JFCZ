@@ -56,23 +56,24 @@ object DeviceHelp : OnDataReceiveListener {
         Log.i("JFCZApplication", "=======onDataReceiveBuffListener==========")
         Log.i("JFCZApplication", bytesToHexString(msg.toByteArray()))
 
-        if (msg[2] == 0x01.toByte()) {
-
-            var status = 3
-            if (msg[msg.size-3].toInt() == 1) {
-                status= 0
+        if (msg[0] == 0x81.toByte() && msg[msg.size-1] == 0xFA.toByte() ) {
+            if (msg[msg.size-5] == 0x81.toByte()){
+                var status = 3
+                if (msg[msg.size-3].toInt() == 1) {
+                    status= 0
+                }
+                if (msg[msg.size-3].toInt() == 0) {
+                    status= 1
+                }
+                var number = msg[msg.size-4].toInt()
+                // todo
+                // number =8
+                val operateStatusBody = operateStatusBody(number,status)
+                val gson = Gson()
+                val json = gson.toJson(operateStatusBody)
+                val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
+                ServiceManager.create(OperateService::class.java).operateStatus(body).observeOnMain {}
             }
-            if (msg[msg.size-3].toInt() == 0) {
-                status= 1
-            }
-            var number = msg[msg.size-4].toInt()
-            // todo
-           // number =8
-            val operateStatusBody = operateStatusBody(number,status)
-            val gson = Gson()
-            val json = gson.toJson(operateStatusBody)
-            val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
-            ServiceManager.create(OperateService::class.java).operateStatus(body).observeOnMain {}
         }
 
     }
