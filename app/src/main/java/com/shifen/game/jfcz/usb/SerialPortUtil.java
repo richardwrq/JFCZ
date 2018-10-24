@@ -100,12 +100,7 @@ public class SerialPortUtil {
                         size += nRead;
                     }
 
-                    if (size >= 0) { //接收的最短报文长15
-
-                        /*if (null != onDataReceiveListener) {
-                            onDataReceiveListener.onDataReceive(buffer, size); //接收数据 ，java数组传递引用，在函数中更改buffer数据，也会造成原buffer中数据的修改
-                        }*/
-
+                    if (size >= 0) {
                         onDataReceive(buffer, size);
                     }
                 } catch (IOException e) {
@@ -117,15 +112,14 @@ public class SerialPortUtil {
 
     private void onDataReceive(byte[] received, int size) {
         // TODO: 2018/3/22 解决粘包、分包等
-        String hexStr = bytes2HexStr(received);
+
         byte[] temp = new byte[size];
         System.arraycopy(received, 0, temp, 0, size);
+        String hexStr = bytes2HexStr(temp);
         Log.i("JFCZApplication","hexStr ="+hexStr);
-        DeviceHelp.INSTANCE.update(temp);
-
 
         if (null != onDataReceiveListener) {
-            onDataReceiveListener.onDataReceive(received, size); //接收数据 ，java数组传递引用，在函数中更改buffer数据，也会造成原buffer中数据的修改
+            onDataReceiveListener.onDataReceive(temp, size); //接收数据 ，java数组传递引用，在函数中更改buffer数据，也会造成原buffer中数据的修改
         }
     }
 
@@ -137,16 +131,11 @@ public class SerialPortUtil {
         for (int i = 0; i < src.length; i++) {
             int v = src[i] & 0xFF;
             String hv = Integer.toHexString(v);
-
-            stringBuilder.append(" 0x");
             if (hv.length() < 2) {
                 stringBuilder.append(0);
-                stringBuilder.append(hv);
-            }else{
-                stringBuilder.append(hv);
             }
-
             stringBuilder.append(hv);
+            stringBuilder.append(" ");
         }
         return stringBuilder.toString();
     }

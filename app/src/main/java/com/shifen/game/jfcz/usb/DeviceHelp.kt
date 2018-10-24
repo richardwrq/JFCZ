@@ -13,7 +13,7 @@ import okhttp3.RequestBody
 /**
  * Created by Administrator on 2018/10/23.
  */
-object DeviceHelp{
+object DeviceHelp : OnDataReceiveListener {
 
     fun initDevice() {
 
@@ -27,49 +27,47 @@ object DeviceHelp{
         Log.i("JFCZApplication", "=======sendData==========")
         Log.i("JFCZApplication", bytesToHexString(bytes))
         SerialPortUtil.getInstance().sendBuffer(bytes)
+        SerialPortUtil.getInstance().setOnDataReceiveListener(this)
     }
 
 
-    private var BUFF_START:Byte = 0xF0.toByte();
-    private var BUFF_PHONE:Byte = 0xF2.toByte();
-    private var BUFF_OVER:Byte = 0xF1.toByte();
-
+    private var BUFF_START:Byte = 0x81.toByte();
+    private var BUFF_OVER:Byte = 0xFA.toByte();
+    private var BUFF_PHONE:Byte = 0x01.toByte();
     var resArr = ArrayList<Byte>();
-    fun update(bytes: ByteArray) {
+    override fun onDataReceive(bytes: ByteArray, size: Int) {
         bytes.forEach {
             resArr.add(it)
         }
-
-        Log.i("JFCZApplication", "resArr = ${resArr.toString()}")
         var tmp1 = resArr[resArr.size - 1];
         if (tmp1 == BUFF_OVER) {
             var last = resArr.lastIndexOf(BUFF_START);
-            var newArr = resArr.subList(last + 1, resArr.size - 1);
-            var tmp2 = newArr[0];
-            if (tmp2 == BUFF_PHONE) {
+            var newArr = resArr.subList(last, resArr.size - 1);
+           /* var tmp2 = newArr[0];
+            if (tmp2 == BUFF_START) {
                 updateData(newArr)
-            }
+            }*/
+            updateData(newArr)
             resArr.clear()
         }
     }
-
 
     fun updateData(msg: MutableList<Byte>) {
         Log.i("JFCZApplication", "=======onDataReceiveBuffListener==========")
         Log.i("JFCZApplication", bytesToHexString(msg.toByteArray()))
 
-        if (msg[2] == 0x01.toByte() && msg[3] == 53.toByte()) {
+        if (msg[2] == 0x01.toByte()) {
 
             var status = 3
-            if (msg[5].toInt() == 1) {
+            if (msg[msg.size-3].toInt() == 1) {
                 status= 0
             }
-            if (msg[5].toInt() == 0) {
+            if (msg[msg.size-3].toInt() == 0) {
                 status= 1
             }
-            var number = msg[4].toInt()
+            var number = msg[msg.size-4].toInt()
             // todo
-            number =8
+           // number =8
             val operateStatusBody = operateStatusBody(number,status)
             val gson = Gson()
             val json = gson.toJson(operateStatusBody)
@@ -86,7 +84,7 @@ object DeviceHelp{
     fun deliverGoods(num: Int) {
         Log.i("JFCZApplication","deliverGoods: ${num}")
         // todo
-        var num =8
+        //var num =8
         val byte0 = 52;
         val byte1 = num;
         val byteArrayOf = byteArrayOf(byte0.toByte(), byte1.toByte())
