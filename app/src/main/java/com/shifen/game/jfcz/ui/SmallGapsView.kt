@@ -157,13 +157,24 @@ class SmallGapsView @JvmOverloads constructor(
         }
         curTime = System.currentTimeMillis()
     }
+
+    var abscur = 10f
+    var startLog=0f
+    fun startLog(){
+        startLog =curAngle
+    }
+
+    fun endLog(){
+        abscur =Math.abs(curAngle-startLog)
+    }
+
     open fun lastKnife (){
         var ret =binarysearchKey(knifeArray, curAngle)
-
+        Log.i("aaaok","ret ${ret} ")
         if (enableReverse){
-            curAngle= ret +5f
+            curAngle= ret +abscur
         }else{
-            curAngle= ret -5f
+            curAngle= ret -abscur
         }
 
     }

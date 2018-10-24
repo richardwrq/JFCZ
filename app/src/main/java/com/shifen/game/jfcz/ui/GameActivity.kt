@@ -95,6 +95,10 @@ class GameActivity : AppCompatActivity() {
             }
 
             override fun onAnimationEnd(p0: Animation?) {
+                if (curRoundIndex == 2 &&waitKnifeNum == 2){
+                    game.endLog()
+                }
+
                 isFailure = !game.addKnife()
                 waitKnifeNum--
                 if (waitKnifeNum < 0) {
@@ -124,11 +128,13 @@ class GameActivity : AppCompatActivity() {
             }
 
             override fun onAnimationStart(p0: Animation?) {
-                if (waitKnifeNum == 1 && curRoundIndex == 2) {
-                    if (waitKnifeNum ==1){
-                        game.lastKnife()
-                    }
+                if (curRoundIndex == 2 &&waitKnifeNum == 2){
+                    game.startLog()
                 }
+
+               /* if (waitKnifeNum == 1 && curRoundIndex == 2) {
+                    game.lastKnife()
+                }*/
 
             }
         })
