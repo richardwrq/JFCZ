@@ -89,6 +89,7 @@ class GiftListActivity : BaseActivity() {
 
             startActivity(Intent(this, PayActivity::class.java).apply {
                 putExtra(PayActivity.GOODS_KEY, currentGoods)
+                putExtra(PayActivity.GIFT_KEY, currentGiftNumber)
                 putExtra(PayActivity.BUY_TYPE, PayActivity.GAME)
             })
         }
