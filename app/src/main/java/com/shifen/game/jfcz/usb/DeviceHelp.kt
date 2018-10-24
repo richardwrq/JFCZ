@@ -18,24 +18,15 @@ object DeviceHelp{
     fun initDevice() {
 
         val path = "/dev/ttyS0"
-        val baudrate = "9600"
-        val serialPortFinder = SerialPortFinder()
-
-        var mDevices = serialPortFinder.allDevicesPath
-        if (mDevices.size == 0) {
-            mDevices = arrayOf()
-        }
-        // 波特率
-        val mDevice = Device(path, baudrate)
-        SerialPortManager.instance().close()
-        SerialPortManager.instance().open(mDevice)
+        val baudrate = 9600
+        SerialPortUtil.getInstance().initSerialPort(path,baudrate,0)
     }
 
 
     fun sendData(bytes: ByteArray) {
         Log.i("JFCZApplication", "=======sendData==========")
         Log.i("JFCZApplication", bytesToHexString(bytes))
-        SerialPortManager.instance().sendCommand(bytes)
+        SerialPortUtil.getInstance().sendBuffer(bytes)
     }
 
 
