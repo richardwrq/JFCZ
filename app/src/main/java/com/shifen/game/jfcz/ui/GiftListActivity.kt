@@ -111,7 +111,6 @@ class GiftListActivity : BaseActivity() {
 
     override fun onNoOperation() {
         super.onNoOperation()
-        finish()
         val intent = Intent(this@GiftListActivity, ADActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)

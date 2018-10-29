@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="460dp"
-    android:layout_height="472dp">
+    android:layout_width="627dp"
+    android:layout_height="643dp">
 
     <View
         android:id="@+id/vPaySuccess"
-        android:layout_width="460dp"
-        android:layout_height="376.6dp"
+        android:layout_width="627dp"
+        android:layout_height="512dp"
         android:background="@mipmap/bg_pay_success"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -16,15 +16,15 @@
     
     <ImageView
         android:id="@+id/ivGift"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
+        android:layout_width="218dp"
+        android:layout_height="218dp"
         android:scaleType="fitXY"
-        android:layout_marginTop="122.67dp"
+        android:layout_marginTop="166dp"
         app:layout_constraintStart_toStartOf="@id/vPaySuccess"
         app:layout_constraintTop_toTopOf="@id/vPaySuccess"
         app:layout_constraintEnd_toEndOf="@id/vPaySuccess"
         app:layout_constraintBottom_toTopOf="@id/tvGiftName"
-        android:src="@color/colorPrimary"/>
+        android:src="@color/white"/>
 
     <TextView
         android:id="@+id/tvGiftName"

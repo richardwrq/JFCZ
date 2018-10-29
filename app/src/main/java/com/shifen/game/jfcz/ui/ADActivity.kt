@@ -41,6 +41,14 @@ class ADActivity : BaseActivity()  {
     }
 
     private fun init() {
+        startActivity(Intent(this, GameActivity::class.java))
+
+        go.setOnClickListener{
+            stopTimer()
+            startActivity(Intent(this, GiftListActivity::class.java))
+            finish()
+        }
+
         banner.setIndicatorGravity(BannerConfig.CENTER)
                 .setImageLoader(GlideImageLoader())
                 .setImages(ArrayList<String>())
@@ -49,6 +57,7 @@ class ADActivity : BaseActivity()  {
         banner.setOnBannerListener {
             stopTimer()
             startActivity(Intent(this, GiftListActivity::class.java))
+            finish()
         }
 
         LocalBroadcastManager.getInstance(this).registerReceiver(refreshBroadcastReceiver, IntentFilter(ACTION_REFRESH_BANNER))

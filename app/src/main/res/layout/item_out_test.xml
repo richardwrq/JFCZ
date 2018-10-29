@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Button xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/btnGift"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
+    android:layout_width="60dp"
+    android:layout_height="wrap_content"
     android:padding="0dp"
     android:gravity="center"
-    android:background="@drawable/bg_item_gift_list"
     android:textSize="28.7dp"
     android:textColor="#1A1A1A"
     android:textStyle="bold">

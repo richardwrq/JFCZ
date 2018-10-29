@@ -2,16 +2,12 @@ package com.shifen.game.jfcz.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
-import com.shifen.game.jfcz.JFCZApplication
 import com.shifen.game.jfcz.R
-import com.shifen.game.jfcz.model.Gift
 import com.shifen.game.jfcz.model.Goods
 import com.shifen.game.jfcz.model.OrderStatusRequestBody
 import com.shifen.game.jfcz.services.*
-import com.shifen.game.jfcz.usb.DeviceHelp
 import com.shifen.game.jfcz.utils.ApiConfig
 import com.shifen.game.jfcz.utils.GAME_SESSION_ID
 import com.shifen.game.jfcz.utils.USER_ID
@@ -19,10 +15,10 @@ import com.shifen.game.jfcz.utils.putConfig
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_pay.*
 import java.util.concurrent.TimeUnit
 import okhttp3.RequestBody
+import usb.DeviceHelp
 import java.text.Format
 import java.text.SimpleDateFormat
 
@@ -100,7 +96,7 @@ class PayActivity : BaseActivity() {
                                     })
 
                                     // TODO("打开货柜，上报")
-                                    DeviceHelp.deliverGoods(currentGiftNumber)
+                                    DeviceHelp.getInstance().deliverGoods(currentGiftNumber)
 
                                 } else if (type == GAME) {
                                     disposables.dispose()

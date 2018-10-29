@@ -8,10 +8,20 @@
 
     <string name="pls_choose_gift">请先选择一个礼品</string>
     <string name="loading_data">正在请求数据，请稍后...</string>
-    
     <string name="network_invalid">网络异常，请联系管理员</string>
     <string name="login_error">登录异常，请联系管理员</string>
 
     <string name="pay_success_tips">恭喜您获得%s一个</string>
     <string name="order_id">订单编号:%s</string>
+
+
+    <string name="gohome">返回</string>
+    <string name="winning_mode">中奖模式</string>
+    <string name="winning_mode_fixed">固定模式</string>
+    <string name="winning_mode_fixed_hint">固定多少局</string>
+    <string name="winning_mode_random">随机模式</string>
+    <string name="winning_mode_random_hint">随机多少局</string>
+    <string name="title_activity_out_test">OutTestActivity</string>
+    <string name="out_test">输出测试</string>
+    <string name="out_test_end">输出停止</string>
 </resources>

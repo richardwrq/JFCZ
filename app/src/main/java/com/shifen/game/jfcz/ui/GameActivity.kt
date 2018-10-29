@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -18,16 +17,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.google.gson.Gson
 import com.shifen.game.jfcz.ConfigManager
-import com.shifen.game.jfcz.JFCZApplication
 import com.shifen.game.jfcz.R
 import com.shifen.game.jfcz.model.*
 import com.shifen.game.jfcz.services.*
-import com.shifen.game.jfcz.usb.DeviceHelp
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_game.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.json.JSONObject
+import usb.DeviceHelp
+import usb.OnDataReceiveListener
 
 
 class GameActivity : AppCompatActivity() {
@@ -63,16 +61,16 @@ class GameActivity : AppCompatActivity() {
         val KEY_SESSION_ID = "KEY_SESSION_ID"
     }
 
-    private var mGirdId = ""
+  /*  private var mGirdId = ""
     private var mUserId = ""
     private var mGoodsId = ""
-    private var mSessionId = ""
+    private var mSessionId = ""*/
 
-    /*private var mGirdId = "0000000000000001"
+    private var mGirdId = "0000000000000001"
     private var mUserId = "wx3453645756345d535"
     private var mGoodsId = "0000000000001111"
-    private var mSessionId = "1000000000000001"*/
-
+    private var mSessionId = "1000000000000001"
+    private var mustFailure =true;
     init {
         val animation1 = AlphaAnimation(0f, 1f)
         val animation2 = AlphaAnimation(1f, 0f)
@@ -95,8 +93,10 @@ class GameActivity : AppCompatActivity() {
             }
 
             override fun onAnimationEnd(p0: Animation?) {
-                if (curRoundIndex == 2 &&waitKnifeNum == 2){
-                    game.endLog()
+                if (mustFailure){
+                    if (curRoundIndex == 2 &&waitKnifeNum == 2){
+                        game.endLog()
+                    }
                 }
 
                 isFailure = !game.addKnife()
@@ -128,13 +128,16 @@ class GameActivity : AppCompatActivity() {
             }
 
             override fun onAnimationStart(p0: Animation?) {
-                if (curRoundIndex == 2 &&waitKnifeNum == 2){
-                    game.startLog()
-                }
 
-               /* if (waitKnifeNum == 1 && curRoundIndex == 2) {
-                    game.lastKnife()
-                }*/
+                if (mustFailure){
+                    if (curRoundIndex == 2 &&waitKnifeNum == 2){
+                        game.startLog()
+                    }
+
+                    if (waitKnifeNum == 1 && curRoundIndex == 2) {
+                        game.lastKnife()
+                    }
+                }
 
             }
         })
@@ -163,6 +166,16 @@ class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+
+
+        var gameNumber = ConfigManager.getGameNumber()
+        gameNumber--
+        ConfigManager.updateGameNumber(gameNumber);
+        if (gameNumber < 0) {
+            mustFailure = false
+        }
+
+
         val animator1 = ObjectAnimator.ofFloat(ivFruits1, "translationX", 0f, 200f)
         val duration = 800L
         animator1.duration = duration
@@ -263,10 +276,20 @@ class GameActivity : AppCompatActivity() {
             updateGameResultView(true)
             return
         }
-        val gameConfig = ConfigManager.getGameConfig()[curRoundIndex]
-        waitKnifeNum = Math.min(gameConfig.kineves, 20)
-        countDownSeconds = gameConfig.leaveTime
-        game.speed = gameConfig.speed * 80
+
+        var gameConfig:GameConfig;
+        if (mustFailure){
+            gameConfig = ConfigManager.getGameConfig()[curRoundIndex]
+            waitKnifeNum = Math.min(gameConfig.kineves, 20)
+            countDownSeconds = gameConfig.leaveTime
+            game.speed = gameConfig.speed * 80
+        }else{
+            // TODO 容易模式
+            gameConfig = ConfigManager.getEasyGameConfig()[curRoundIndex]
+            waitKnifeNum = Math.min(gameConfig.kineves, 15)
+            countDownSeconds = gameConfig.leaveTime
+            game.speed = gameConfig.speed
+        }
 
         if (waitKnifeNum > 10) {
             ltWaitKnife2Group.visibility = View.VISIBLE
@@ -301,7 +324,7 @@ class GameActivity : AppCompatActivity() {
             if (gameConfig.rotate == 1) {
                 enableReverse()
             }
-            game.start()
+            game.start(curRoundIndex)
         }, 3000L)
     }
 
@@ -411,16 +434,39 @@ class GameActivity : AppCompatActivity() {
     fun updateGoods() {
 
         val updateGoodsBodyRequestBody = updateGoodsBody(mGirdId, mGoodsId)
-        val gson = Gson()
-        val json = gson.toJson(updateGoodsBodyRequestBody)
-        val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
+        var gson = Gson()
+        var json = gson.toJson(updateGoodsBodyRequestBody)
+        var body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
         ServiceManager.create(GoodsService::class.java).updateGoods(body)
                 .observeOnMain {}
 
         val currentGiftNumber = intent.getIntExtra(PayActivity.GIFT_KEY, -1)
         // TODO("打开货柜，上报")
-        DeviceHelp.deliverGoods(currentGiftNumber)
+        DeviceHelp.getInstance().deliverGoods(currentGiftNumber)
+       /* var operateStatusBody = operateStatusBody(currentGiftNumber, 1)
+        gson = Gson()
+        json = gson.toJson(operateStatusBody)
+        body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
+        ServiceManager.create(OperateService::class.java).operateStatus(body).observeOnMain {}
 
+        DeviceHelp.getInstance().setOnDataReceiveListener(object : OnDataReceiveListener {
+            override fun onDataReceive(bytes: ByteArray) {
+                if (bytes[3] == DeviceHelp.DELIVER_GOODS_RETURN) {
+                    var number = bytes[4].toInt();
+                    var status = bytes[5].toInt();
+                    operateStatusBody = operateStatusBody(number, status)
+                    gson = Gson()
+                    json = gson.toJson(operateStatusBody)
+                    body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
+                    ServiceManager.create(OperateService::class.java).operateStatus(body).observeOnMain {}
+                }
+            }
+        })*/
+
+
+        //恢复默认次数  固定模式
+        ConfigManager.updateGameNumber(ConfigManager.getNetGameNumber())
+        mustFailure = true;
     }
 
 

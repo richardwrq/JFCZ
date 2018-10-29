@@ -8,7 +8,7 @@
 
     <View
         android:id="@+id/vPayBox"
-        android:layout_width="820dp"
+        android:layout_width="1118dp"
         android:layout_height="576dp"
         android:background="@mipmap/bg_pay_box"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -52,13 +52,11 @@
         android:textColor="@android:color/white"
         android:textStyle="bold"
         android:textSize="25.3dp"
-        app:layout_constraintStart_toEndOf="@+id/ivGift"
+        app:layout_constraintLeft_toLeftOf="@+id/tvGiftNumber"
         app:layout_constraintTop_toBottomOf="@+id/tvGiftNumber"
-        app:layout_constraintEnd_toStartOf="@+id/vQRCode"
         app:layout_constraintBottom_toTopOf="@+id/tvGiftPrice"
         app:layout_constrainedWidth="true"
         app:layout_constraintHorizontal_bias="0"
-        android:layout_marginStart="20dp"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="18dp"
         tools:text="猫咪公仔"/>
@@ -69,13 +67,12 @@
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
         android:textSize="20dp"
-        app:layout_constraintStart_toEndOf="@+id/ivGift"
+
         app:layout_constraintTop_toBottomOf="@+id/tvGiftName"
-        app:layout_constraintEnd_toStartOf="@+id/vQRCode"
+        app:layout_constraintLeft_toLeftOf="@+id/tvGiftName"
         app:layout_constraintBottom_toBottomOf="@+id/vPayBox"
         app:layout_constrainedWidth="true"
         app:layout_constraintHorizontal_bias="0"
-        android:layout_marginStart="20dp"
         android:layout_marginTop="13.3dp"
         android:layout_marginEnd="10dp"
         tools:text="售价：50元"/>
@@ -106,9 +103,12 @@
         android:id="@+id/closebutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="close"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="16dp" />
+        android:background="@drawable/bg_btn_fanhui"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="#212121"/>
 
 
 </android.support.constraint.ConstraintLayout>

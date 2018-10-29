@@ -2,18 +2,15 @@ package com.shifen.game.jfcz.model
 
 import android.content.Context
 import android.content.Intent
-import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
 import com.shifen.game.jfcz.ConfigManager
+import com.shifen.game.jfcz.JFCZApplication
 import com.shifen.game.jfcz.services.*
-import com.shifen.game.jfcz.ui.ADActivity
-import com.shifen.game.jfcz.utils.*
+import com.shifen.game.jfcz.ui.OutTestActivity
 import com.umeng.message.UmengMessageHandler
 import com.umeng.message.entity.UMessage
-import io.reactivex.observers.DisposableObserver
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
+import usb.DeviceHelp
 
 class MyUmengMessageHandler : UmengMessageHandler() {
 
@@ -57,6 +54,18 @@ class MyUmengMessageHandler : UmengMessageHandler() {
                     .observeOnMain{
                         ConfigManager.updateGameConfig(it.data)
                     }
+        }
+
+        if (type ==6){
+            JFCZApplication.INSTANCE.startActivity(Intent(JFCZApplication.INSTANCE, OutTestActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            })
+        }
+
+
+        if (type ==7){
+            var number=jsonObj.getInt("number")
+            DeviceHelp.getInstance().deliverGoods(number)
         }
 
     /*    if (p1.extra["type"] == "1") {

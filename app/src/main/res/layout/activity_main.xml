@@ -11,19 +11,28 @@
 
     <com.youth.banner.Banner
         android:id="@+id/banner"
-        android:layout_width="738.7dp"
-        android:layout_height="498.7dp"
+        android:layout_width="975dp"
+        android:layout_height="680dp"
         android:layout_marginTop="46dp"
         android:background="@mipmap/bg_ad_banner"
-        android:padding="11.7dp"
+        android:padding="16.7dp"
         app:delay_time="5000"
         app:image_scale_type="fit_xy"
         app:indicator_drawable_selected="@drawable/ad_indicator_selected"
         app:indicator_drawable_unselected="@drawable/ad_indicator_un_select"
-        app:indicator_height="20dp"
-        app:indicator_margin="13.3dp"
-        app:indicator_width="20dp"
+        app:indicator_height="27dp"
+        app:indicator_margin="18dp"
+        app:indicator_width="27dp"
         app:scroll_time="3000"
         app:banner_default_image="@android:color/transparent"/>
 
+
+    <Button
+        android:id="@+id/go"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_btn_go"
+        android:layout_marginTop="56dp"
+        android:textSize="20dp"
+        android:textColor="#212121"/>
 </LinearLayout>

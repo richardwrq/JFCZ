@@ -189,6 +189,11 @@ interface OperateService {
     @POST("/sale/operate/grid")
     fun operateStatus(@Body json: RequestBody): Observable<Response<String>>
 
+    // 柜子锁操作
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST("/sale/update/grids/status")
+    fun operateStatusAll(@Body json: RequestBody): Observable<Response<String>>
+
 
 }
 

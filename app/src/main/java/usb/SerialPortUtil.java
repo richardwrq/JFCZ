@@ -1,15 +1,20 @@
-package com.shifen.game.jfcz.usb;
+package usb;
 
-import android.serialport.SerialPort;
+
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
+
+import com.shifen.game.jfcz.JFCZApplication;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Created by Administrator on 2018/10/24.
@@ -22,7 +27,6 @@ public class SerialPortUtil {
     private OutputStream mOutputStream = null;
     private InputStream mInputStream = null;
     private SerialReadThread mSerialReadThread = null;        //数据接收线程
-    private OnDataReceiveListener onDataReceiveListener = null; //串口数据读取接口
     private volatile boolean isStop = false;
 
     private static SerialPortUtil serialPortUtil = null;       //单例模式
@@ -36,13 +40,6 @@ public class SerialPortUtil {
             }
         }
         return serialPortUtil;
-    }
-
-
-    //设置数据接收接口
-    public void setOnDataReceiveListener(
-            OnDataReceiveListener dataReceiveListener) {
-        onDataReceiveListener = dataReceiveListener;
     }
 
 
@@ -85,23 +82,21 @@ public class SerialPortUtil {
                 int size = 0;
                 try {
                     if (mInputStream == null) return;
-
-                    byte[] buffer = new byte[1024];
-
-                    size = mInputStream.read(buffer);
                     try {
                         Thread.sleep(10);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
-                    while ((nRead = mInputStream.available()) > 0 && size < 900) {
-                        nRead = mInputStream.read(buffer, size, 100);
-                        size += nRead;
-                    }
+                    int length =mInputStream.available();
+                    byte[] data = new byte[length];
 
-                    if (size >= 0) {
-                        onDataReceive(buffer, size);
+                    mInputStream.read(data,0,length);
+
+                    if (data.length > 0){
+
+                        //Log.i("ooo","hex = "+bytes2HexStr(data));
+                        seralToDeviceHelp.onSeralToDeviceHelp(data);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -109,20 +104,31 @@ public class SerialPortUtil {
             }
         }
     }
+    private  SeralToDeviceHelp seralToDeviceHelp = null; //串口数据读取接口
 
-    private void onDataReceive(byte[] received, int size) {
-        // TODO: 2018/3/22 解决粘包、分包等
-
-        byte[] temp = new byte[size];
-        System.arraycopy(received, 0, temp, 0, size);
-        String hexStr = bytes2HexStr(temp);
-        Log.i("JFCZApplication","hexStr ="+hexStr);
-
-        if (null != onDataReceiveListener) {
-            onDataReceiveListener.onDataReceive(temp, size); //接收数据 ，java数组传递引用，在函数中更改buffer数据，也会造成原buffer中数据的修改
-        }
+    //设置数据接收接口
+    public void setOnDataReceiveListener(SeralToDeviceHelp l) {
+        seralToDeviceHelp = l;
     }
 
+    private ArrayList<Byte> content = new ArrayList<Byte>();
+
+    private String bytes2HexStr(ArrayList<Byte> src) {
+        StringBuilder stringBuilder = new StringBuilder("");
+        if (src == null || src.size() <= 0) {
+            return null;
+        }
+        for (int i = 0; i < src.size(); i++) {
+            int v = src.get(i) & 0xFF;
+            String hv = Integer.toHexString(v);
+            if (hv.length() < 2) {
+                stringBuilder.append(0);
+            }
+            stringBuilder.append(hv);
+            stringBuilder.append(" ");
+        }
+        return stringBuilder.toString();
+    }
     private String bytes2HexStr(byte[] src) {
         StringBuilder stringBuilder = new StringBuilder("");
         if (src == null || src.length <= 0) {
@@ -171,24 +177,5 @@ public class SerialPortUtil {
             serialPort = null;
         }
     }
-
-
-
 }
-
-
-
-
-
-/*
-//数据接收接口对象
-    private OnDataReceiveListener  tmpOnDataReceiveListener=new OnDataReceiveListener(){
-        @Override
-        public void onDataReceive(byte[] buffer, int size) {
-            int [] receivedata= BytesUtil.byteToInt(buffer,size);
-            //处理收到的串口数据，解析串口协议
-            String str=new String(receivedata,0,size);
-            Log.d(TAG, new String(buffer,0,size)); //打印
-        }
-    };*/
 

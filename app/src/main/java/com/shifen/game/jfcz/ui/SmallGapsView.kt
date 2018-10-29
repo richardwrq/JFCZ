@@ -83,9 +83,34 @@ class SmallGapsView @JvmOverloads constructor(
                 gameBitmapHalfHeight - centerBitmapHalfHeight, paint)
     }
 
-    fun start() {
+    fun start(curRoundIndex:Int) {
         curTime = System.currentTimeMillis()
         knifeArray.clear()
+
+        if (curRoundIndex ==1){
+            for (i in 1..2){
+                var f = i*180.toFloat()
+                knifeArray.add(f)
+                knifeMatrix.reset()
+                knifeMatrix.postTranslate(gameBitmapHalfWidth, centerBitmapHalfHeight + 1.6f * knifeBitmap.height)
+                knifeMatrix.postRotate(f, gameBitmapHalfWidth, gameBitmapHalfHeight)
+                gameCanvas.drawBitmap(knifeBitmap, knifeMatrix, paint)
+                gameCanvas.drawBitmap(centerBitmap, gameBitmapHalfWidth - centerBitmapHalfWidth, gameBitmapHalfHeight - centerBitmapHalfHeight, paint)
+            }
+        }
+
+        if (curRoundIndex ==2){
+            for (i in 1..4){
+                var f = i*90.toFloat()
+                knifeArray.add(f)
+                knifeMatrix.reset()
+                knifeMatrix.postTranslate(gameBitmapHalfWidth, centerBitmapHalfHeight + 1.6f * knifeBitmap.height)
+                knifeMatrix.postRotate(f, gameBitmapHalfWidth, gameBitmapHalfHeight)
+                gameCanvas.drawBitmap(knifeBitmap, knifeMatrix, paint)
+                gameCanvas.drawBitmap(centerBitmap, gameBitmapHalfWidth - centerBitmapHalfWidth, gameBitmapHalfHeight - centerBitmapHalfHeight, paint)
+            }
+        }
+
         countDownTimer.start()
     }
 

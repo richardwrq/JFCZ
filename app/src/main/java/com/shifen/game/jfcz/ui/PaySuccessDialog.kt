@@ -30,7 +30,9 @@ class PaySuccessDialog : Activity() {
 
         tvOrderNumber.text = getString(R.string.order_id, intent.getStringExtra(PayActivity.SESSION_ID_KEY))
 
-        btnFinish.setOnClickListener { finish() }
+        btnFinish.setOnClickListener {
+            finish()
+        }
     }
 
     override fun onAttachedToWindow() {
