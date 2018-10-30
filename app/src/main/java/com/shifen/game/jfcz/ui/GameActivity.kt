@@ -26,6 +26,7 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.json.JSONObject
 import usb.DeviceHelp
+import usb.OnDataReceiveListener
 
 
 class GameActivity : AppCompatActivity() {
@@ -442,25 +443,19 @@ class GameActivity : AppCompatActivity() {
         val currentGiftNumber = intent.getIntExtra(PayActivity.GIFT_KEY, -1)
         // TODO("打开货柜，上报")
         DeviceHelp.getInstance().deliverGoods(currentGiftNumber)
-       /* var operateStatusBody = operateStatusBody(currentGiftNumber, 1)
-        gson = Gson()
-        json = gson.toJson(operateStatusBody)
-        body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
-        ServiceManager.create(OperateService::class.java).operateStatus(body).observeOnMain {}
-
         DeviceHelp.getInstance().setOnDataReceiveListener(object : OnDataReceiveListener {
             override fun onDataReceive(bytes: ByteArray) {
                 if (bytes[3] == DeviceHelp.DELIVER_GOODS_RETURN) {
                     var number = bytes[4].toInt();
                     var status = bytes[5].toInt();
-                    operateStatusBody = operateStatusBody(number, status)
+                    var operateStatusBody = operateStatusBody(number, status)
                     gson = Gson()
                     json = gson.toJson(operateStatusBody)
                     body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
                     ServiceManager.create(OperateService::class.java).operateStatus(body).observeOnMain {}
                 }
             }
-        })*/
+        })
 
 
         //恢复默认次数  固定模式

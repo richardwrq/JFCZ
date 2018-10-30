@@ -118,12 +118,14 @@ class JFCZApplication() : Application() {
                             var status = msg[3 + i].toInt()
                             // 00 关闭 01 开启 02 未知
                             // houtai 0：关闭，1：开启，2：禁止，3：异常
-                            if (msg[4 + i].toInt() == 0x00) {
+                            if (msg[3 + i].toInt() == 0x00) {
                                 status = 0
                             }
-                            if (msg[4 + i].toInt() == 0x01) {
+                            if (msg[3 + i].toInt() == 0x01) {
                                 status = 1
                             }
+                            // TODO
+                            status = 0
                             var item = operateStatusBody(i, status);
                             itemArray.add(item)
                         }

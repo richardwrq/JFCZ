@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import com.shifen.game.jfcz.R
 import com.shifen.game.jfcz.model.Goods
 import com.shifen.game.jfcz.model.OrderStatusRequestBody
+import com.shifen.game.jfcz.model.operateStatusBody
 import com.shifen.game.jfcz.services.*
 import com.shifen.game.jfcz.utils.ApiConfig
 import com.shifen.game.jfcz.utils.GAME_SESSION_ID
@@ -19,6 +20,7 @@ import kotlinx.android.synthetic.main.activity_pay.*
 import java.util.concurrent.TimeUnit
 import okhttp3.RequestBody
 import usb.DeviceHelp
+import usb.OnDataReceiveListener
 import java.text.Format
 import java.text.SimpleDateFormat
 
@@ -97,6 +99,19 @@ class PayActivity : BaseActivity() {
 
                                     // TODO("打开货柜，上报")
                                     DeviceHelp.getInstance().deliverGoods(currentGiftNumber)
+                                    DeviceHelp.getInstance().setOnDataReceiveListener(object : OnDataReceiveListener {
+                                        override fun onDataReceive(bytes: ByteArray) {
+                                            if (bytes[3] == DeviceHelp.DELIVER_GOODS_RETURN) {
+                                                var number = bytes[4].toInt();
+                                                var status = bytes[5].toInt();
+                                                var operateStatusBody = operateStatusBody(number, status)
+                                                var gson = Gson()
+                                                var json = gson.toJson(operateStatusBody)
+                                                var body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json)
+                                                ServiceManager.create(OperateService::class.java).operateStatus(body).observeOnMain {}
+                                            }
+                                        }
+                                    })
 
                                 } else if (type == GAME) {
                                     disposables.dispose()
