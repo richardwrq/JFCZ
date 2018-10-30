@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -25,7 +26,6 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.json.JSONObject
 import usb.DeviceHelp
-import usb.OnDataReceiveListener
 
 
 class GameActivity : AppCompatActivity() {
@@ -61,15 +61,15 @@ class GameActivity : AppCompatActivity() {
         val KEY_SESSION_ID = "KEY_SESSION_ID"
     }
 
-  /*  private var mGirdId = ""
+    private var mGirdId = ""
     private var mUserId = ""
     private var mGoodsId = ""
-    private var mSessionId = ""*/
+    private var mSessionId = ""
 
-    private var mGirdId = "0000000000000001"
+   /* private var mGirdId = "0000000000000001"
     private var mUserId = "wx3453645756345d535"
     private var mGoodsId = "0000000000001111"
-    private var mSessionId = "1000000000000001"
+    private var mSessionId = "1000000000000001"*/
     private var mustFailure =true;
     init {
         val animation1 = AlphaAnimation(0f, 1f)
@@ -93,12 +93,6 @@ class GameActivity : AppCompatActivity() {
             }
 
             override fun onAnimationEnd(p0: Animation?) {
-                if (mustFailure){
-                    if (curRoundIndex == 2 &&waitKnifeNum == 2){
-                        game.endLog()
-                    }
-                }
-
                 isFailure = !game.addKnife()
                 waitKnifeNum--
                 if (waitKnifeNum < 0) {
@@ -128,17 +122,11 @@ class GameActivity : AppCompatActivity() {
             }
 
             override fun onAnimationStart(p0: Animation?) {
-
                 if (mustFailure){
-                    if (curRoundIndex == 2 &&waitKnifeNum == 2){
-                        game.startLog()
-                    }
-
-                    if (waitKnifeNum == 1 && curRoundIndex == 2) {
-                        game.lastKnife()
+                    if (waitKnifeNum == 1 && curRoundIndex ==2) {
+                        game.lastKnife(animation.duration)
                     }
                 }
-
             }
         })
 
@@ -167,14 +155,25 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
+        Log.i("aaaok",ConfigManager.getGameProbability().toString())
+        if (ConfigManager.getGameProbability()!!.randomType ==1){
+            var gameNumber = ConfigManager.getGameNumber()
+            gameNumber --
+            ConfigManager.updateGameNumber(gameNumber);
 
-        var gameNumber = ConfigManager.getGameNumber()
-        gameNumber--
-        ConfigManager.updateGameNumber(gameNumber);
-        if (gameNumber < 0) {
-            mustFailure = false
+            Log.i("aaaok","gameNumber = ${gameNumber}")
+            if (gameNumber < 0) {
+                mustFailure = false
+            }
+        }else {
+            val random = java.util.Random()// 定义随机类
+            val result = random.nextInt( ConfigManager.getGameNumber()) +1  //[1,num)
+            if (result ==1){
+                mustFailure = false
+            }
         }
 
+        Log.i("aaaok","mustFailure = ${mustFailure}")
 
         val animator1 = ObjectAnimator.ofFloat(ivFruits1, "translationX", 0f, 200f)
         val duration = 800L
@@ -286,9 +285,9 @@ class GameActivity : AppCompatActivity() {
         }else{
             // TODO 容易模式
             gameConfig = ConfigManager.getEasyGameConfig()[curRoundIndex]
-            waitKnifeNum = Math.min(gameConfig.kineves, 15)
+            waitKnifeNum = Math.min(gameConfig.kineves, 20)
             countDownSeconds = gameConfig.leaveTime
-            game.speed = gameConfig.speed
+            game.speed = gameConfig.speed* 60
         }
 
         if (waitKnifeNum > 10) {
@@ -465,7 +464,9 @@ class GameActivity : AppCompatActivity() {
 
 
         //恢复默认次数  固定模式
-        ConfigManager.updateGameNumber(ConfigManager.getNetGameNumber())
+        if (ConfigManager.getGameProbability()!!.randomType ==1){
+            ConfigManager.updateGameNumber(ConfigManager.getGameProbability()!!.rate)
+        }
         mustFailure = true;
     }
 

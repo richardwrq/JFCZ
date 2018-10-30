@@ -45,9 +45,6 @@ class JFCZApplication() : Application() {
 
         initUM()
 
-        ConfigManager.init(this)
-        ApiConfig.token = getConfig().getString(APP_TOKEN, "")!!
-        ApiConfig.containerId = getConfig().getString(CONTAINER_ID, "")!!
 
         val processName =getProcessName(this, android.os.Process.myPid())
         if (processName != null) {
@@ -57,6 +54,10 @@ class JFCZApplication() : Application() {
                 var  serialHandler = SerialHandler.getInstance()
                 DeviceHelp.getInstance().initDevice(serialHandler)
                 initStatus()
+
+                ConfigManager.init(this)
+                ApiConfig.token = getConfig().getString(APP_TOKEN, "")!!
+                ApiConfig.containerId = getConfig().getString(CONTAINER_ID, "")!!
             }
         }
 

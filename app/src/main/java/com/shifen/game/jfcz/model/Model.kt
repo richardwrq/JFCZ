@@ -240,3 +240,6 @@ data class PushBindRequestBody(val deviceId: String, val deviceToken: String)
 data class updateGoodsBody(var gridId:String,var goodsId:String)
 
 data class operateStatusBody(var number:Int,var status:Int)
+
+
+data class GameProbability(val type:Int,val rate:Int,val randomType:Int)

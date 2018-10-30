@@ -56,6 +56,13 @@ class MyUmengMessageHandler : UmengMessageHandler() {
                     }
         }
 
+        if (type ==4){
+            var rate = jsonObj.getInt("rate")
+            var randomType= jsonObj.getInt("randomType")
+            var probability =GameProbability(type,rate,randomType)
+            ConfigManager.updateGameProbability(probability)
+        }
+
         if (type ==6){
             JFCZApplication.INSTANCE.startActivity(Intent(JFCZApplication.INSTANCE, OutTestActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

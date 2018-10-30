@@ -83,14 +83,15 @@ class SmallGapsView @JvmOverloads constructor(
                 gameBitmapHalfHeight - centerBitmapHalfHeight, paint)
     }
 
-    fun start(curRoundIndex:Int) {
+    var curRoundIndex =0
+    fun start(c:Int) {
+        curRoundIndex =c
         curTime = System.currentTimeMillis()
         knifeArray.clear()
 
         if (curRoundIndex ==1){
             for (i in 1..2){
                 var f = i*180.toFloat()
-                knifeArray.add(f)
                 knifeMatrix.reset()
                 knifeMatrix.postTranslate(gameBitmapHalfWidth, centerBitmapHalfHeight + 1.6f * knifeBitmap.height)
                 knifeMatrix.postRotate(f, gameBitmapHalfWidth, gameBitmapHalfHeight)
@@ -102,7 +103,6 @@ class SmallGapsView @JvmOverloads constructor(
         if (curRoundIndex ==2){
             for (i in 1..4){
                 var f = i*90.toFloat()
-                knifeArray.add(f)
                 knifeMatrix.reset()
                 knifeMatrix.postTranslate(gameBitmapHalfWidth, centerBitmapHalfHeight + 1.6f * knifeBitmap.height)
                 knifeMatrix.postRotate(f, gameBitmapHalfWidth, gameBitmapHalfHeight)
@@ -127,7 +127,17 @@ class SmallGapsView @JvmOverloads constructor(
             return false
         }
         var result = true
-        updateCurAngle()
+        if (curRoundIndex == 1) {
+            if (curAngle % 180 in (0 - FAILUR_ANGLE)..(0 + FAILUR_ANGLE)) {
+                return false
+            }
+        }
+
+        if (curRoundIndex ==2){
+            if (curAngle % 90 in (0 - FAILUR_ANGLE)..(0 + FAILUR_ANGLE)) {
+                return false
+            }
+        }
         knifeArray.forEach {
             if (curAngle in it - FAILUR_ANGLE..it + FAILUR_ANGLE) {
                 isFailure = true
@@ -140,8 +150,10 @@ class SmallGapsView @JvmOverloads constructor(
         knifeMatrix.postTranslate(gameBitmapHalfWidth, centerBitmapHalfHeight + 1.6f * knifeBitmap.height)
         knifeMatrix.postRotate(-curAngle, gameBitmapHalfWidth, gameBitmapHalfHeight)
         gameCanvas.drawBitmap(knifeBitmap, knifeMatrix, paint)
-
         gameCanvas.drawBitmap(centerBitmap, gameBitmapHalfWidth - centerBitmapHalfWidth, gameBitmapHalfHeight - centerBitmapHalfHeight, paint)
+
+
+        updateCurAngle()
         return result
     }
 
@@ -183,29 +195,38 @@ class SmallGapsView @JvmOverloads constructor(
         curTime = System.currentTimeMillis()
     }
 
-    var abscur = 10f
-    var startLog=0f
     fun startLog(){
-        startLog =curAngle
+        Log.i("aaaok","startLog ${curAngle} speed = ${speed} cc=${(System.currentTimeMillis() - curTime) * speed / 1000}")
     }
 
     fun endLog(){
-        abscur =Math.abs(curAngle-startLog)
+         Log.i("aaaok","endLog ${curAngle} speed = ${speed} cc=${(System.currentTimeMillis() - curTime) * speed / 1000}")
     }
 
-    open fun lastKnife (){
+    open fun lastKnife(duration: Long) {
+        var abscur =((duration*speed/1000).toFloat())
         var ret =binarysearchKey(knifeArray, curAngle)
-        Log.i("aaaok","ret ${ret} ")
+        Log.i("aaaok","ret ${ret} abscur ${abscur}")
         if (enableReverse){
             curAngle= ret +abscur
         }else{
             curAngle= ret -abscur
         }
-
+        Log.i("aaaok","ret2 ${curAngle}")
     }
-
+    /*open fun lastKnife(duration: Long) {
+        abscur =Math.abs(startLog-endLog)
+        var ret =binarysearchKey(knifeArray, curAngle)
+        Log.i("aaaok","ret ${ret} abscur ${abscur}")
+        if (enableReverse){
+            curAngle= ret +abscur
+        }else{
+            curAngle= ret -abscur
+        }
+        Log.i("aaaok","ret2 ${curAngle}")
+    }*/
     fun binarysearchKey(a: ArrayList<Float>, targetNum: Float): Float {
-        Log.i("aaaok","数组 ${a.toString()} enableReverse = ${enableReverse} targetNum = ${targetNum}")
+
         var array = ArrayList<Float>()
         a.forEach {
             array.add(it)
@@ -213,6 +234,7 @@ class SmallGapsView @JvmOverloads constructor(
         Collections.sort(array)
         var start = array[array.size-1]-360f
         var end = array[0]+360f
+        Log.i("aaaok","数组 ${array.toString()} enableReverse = ${enableReverse} targetNum = ${targetNum}")
         array.add(start)
         array.add(end)
         Collections.sort(array)
