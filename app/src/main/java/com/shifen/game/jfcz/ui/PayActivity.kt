@@ -2,6 +2,7 @@ package com.shifen.game.jfcz.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.shifen.game.jfcz.R
@@ -58,7 +59,13 @@ class PayActivity : BaseActivity() {
 
         tvGiftNumber.text = getString(R.string.choose_gift, goods.id)
         tvGiftName.text = goods.description
-        tvGiftPrice.text = getString(R.string.gift_price, goods.price)
+
+        if (type == BUY){
+            tvGiftPrice.text = getString(R.string.gift_price, goods.price)
+        }else{
+            tvGiftPrice.text = getString(R.string.gift_price, goods.gamePrice)
+        }
+
         Glide.with(this).load(goods.pictureUrl).into(ivGift)
 
         refreshQRCode()
@@ -83,7 +90,7 @@ class PayActivity : BaseActivity() {
 
                     ServiceManager.create(PayService::class.java).payOrderStatus(body)
                             .observeOnMain(onNext = { res ->
-
+                                if (res.code!=0){return@observeOnMain}
                                 if (type == BUY) {
                                     putConfig { editor ->
                                         editor.putString(USER_ID, res.data.userId)
@@ -158,7 +165,7 @@ class PayActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        startTimer()
+        //startTimer()
     }
 
     override fun onPause() {

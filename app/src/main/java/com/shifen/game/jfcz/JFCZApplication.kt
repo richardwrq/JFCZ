@@ -19,11 +19,9 @@ import okhttp3.RequestBody
 import usb.DeviceHelp
 import usb.SerialHandler
 import java.util.*
-import android.app.ActivityManager.RunningAppProcessInfo
-import android.content.Context.ACTIVITY_SERVICE
-import android.support.v4.content.ContextCompat.getSystemService
 import android.app.ActivityManager
 import android.content.Context
+import com.shifen.game.jfcz.restart.CrashHandler
 import com.shifen.game.jfcz.services.OperateService
 import usb.OnDataReceiveListener
 
@@ -40,6 +38,7 @@ class JFCZApplication() : Application() {
     public override fun onCreate() {
         super.onCreate()
         INSTANCE = this
+
         //val crashHandler = CrashHandler.getInstance()
         //crashHandler.init(applicationContext)
 

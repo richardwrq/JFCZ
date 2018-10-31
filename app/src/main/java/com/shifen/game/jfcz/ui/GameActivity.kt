@@ -30,6 +30,9 @@ import usb.OnDataReceiveListener
 
 
 class GameActivity : AppCompatActivity() {
+
+    private val TAG = "GameActivity"
+
     private val COUNT_DOWN_SECONDS = 30
     private val COUNT_DOWN_SECONDS_FAILURE = 10
     private var curRoundIndex = -1
@@ -67,11 +70,11 @@ class GameActivity : AppCompatActivity() {
     private var mGoodsId = ""
     private var mSessionId = ""
 
-   /* private var mGirdId = "0000000000000001"
-    private var mUserId = "wx3453645756345d535"
-    private var mGoodsId = "0000000000001111"
-    private var mSessionId = "1000000000000001"*/
-    private var mustFailure =true;
+    /* private var mGirdId = "0000000000000001"
+     private var mUserId = "wx3453645756345d535"
+     private var mGoodsId = "0000000000001111"
+     private var mSessionId = "1000000000000001"*/
+    private var mustFailure = true;
     init {
         val animation1 = AlphaAnimation(0f, 1f)
         val animation2 = AlphaAnimation(1f, 0f)
@@ -102,7 +105,7 @@ class GameActivity : AppCompatActivity() {
                 tvWaitKnifeNum.text = waitKnifeNum.toString()
                 waitKnifeViews[waitKnifeNum].visibility = View.INVISIBLE
                 if (isFailure) {
-                     updateGameResultView(false)
+                    updateGameResultView(false)
                 } else {
                     ivStar1.startAnimation(ivStar1AnimationSet)
                     game.postDelayed({
@@ -123,8 +126,8 @@ class GameActivity : AppCompatActivity() {
             }
 
             override fun onAnimationStart(p0: Animation?) {
-                if (mustFailure){
-                    if (waitKnifeNum == 1 && curRoundIndex ==2) {
+                if (mustFailure) {
+                    if (waitKnifeNum == 1 && curRoundIndex == 2) {
                         game.lastKnife(animation.duration)
                     }
                 }
@@ -155,26 +158,27 @@ class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
-
-        Log.i("aaaok",ConfigManager.getGameProbability().toString())
-        if (ConfigManager.getGameProbability()!!.randomType ==1){
+        // .getGameConfig()
+        Log.i(TAG, ConfigManager.getGameProbability().toString())
+        Log.i(TAG, ConfigManager.getGameConfig().toString())
+        if (ConfigManager.getGameProbability()!!.randomType == 1) {
             var gameNumber = ConfigManager.getGameNumber()
-            gameNumber --
+            gameNumber--
             ConfigManager.updateGameNumber(gameNumber);
 
-            Log.i("aaaok","gameNumber = ${gameNumber}")
+            Log.i(TAG, "gameNumber = ${gameNumber}")
             if (gameNumber < 0) {
                 mustFailure = false
             }
-        }else {
+        } else {
             val random = java.util.Random()// 定义随机类
-            val result = random.nextInt( ConfigManager.getGameNumber()) +1  //[1,num)
-            if (result ==1){
+            val result = random.nextInt(ConfigManager.getGameNumber()) + 1  //[1,num)
+            if (result == 1) {
                 mustFailure = false
             }
         }
 
-        Log.i("aaaok","mustFailure = ${mustFailure}")
+        Log.i(TAG, "mustFailure = ${mustFailure}")
 
         val animator1 = ObjectAnimator.ofFloat(ivFruits1, "translationX", 0f, 200f)
         val duration = 800L
@@ -277,18 +281,19 @@ class GameActivity : AppCompatActivity() {
             return
         }
 
-        var gameConfig:GameConfig;
-        if (mustFailure){
+        var gameConfig: GameConfig;
+        if (mustFailure) {
             gameConfig = ConfigManager.getGameConfig()[curRoundIndex]
             waitKnifeNum = Math.min(gameConfig.kineves, 20)
             countDownSeconds = gameConfig.leaveTime
             game.speed = gameConfig.speed * 80
-        }else{
+        } else {
             // TODO 容易模式
-            gameConfig = ConfigManager.getEasyGameConfig()[curRoundIndex]
+            gameConfig = ConfigManager.getGameConfig()[curRoundIndex]
+            gameConfig.rotate = 0
             waitKnifeNum = Math.min(gameConfig.kineves, 20)
             countDownSeconds = gameConfig.leaveTime
-            game.speed = gameConfig.speed* 60
+            game.speed = Math.min(gameConfig.speed * 40, 100)
         }
 
         if (waitKnifeNum > 10) {
@@ -378,16 +383,19 @@ class GameActivity : AppCompatActivity() {
             countDownTimerFailure?.start()
         }
     }
+
     override fun onStop() {
         super.onStop()
         game.stop()
         countDownTimerFailure?.cancel()
         countDownTimer.cancel()
     }
+
     private fun startGameNow() {
         startActivity(Intent(this, GiftListActivity::class.java))
         finish()
     }
+
     private fun createCountDownTimer(): CountDownTimer {
         return object : CountDownTimer(countDownSeconds * 1000L, 1000) {
             override fun onFinish() {
@@ -459,12 +467,11 @@ class GameActivity : AppCompatActivity() {
 
 
         //恢复默认次数  固定模式
-        if (ConfigManager.getGameProbability()!!.randomType ==1){
+        if (ConfigManager.getGameProbability()!!.randomType == 1) {
             ConfigManager.updateGameNumber(ConfigManager.getGameProbability()!!.rate)
         }
         mustFailure = true;
     }
-
 
 
     override fun onAttachedToWindow() {

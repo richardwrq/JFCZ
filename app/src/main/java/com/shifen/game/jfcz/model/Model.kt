@@ -219,7 +219,7 @@ data class Config(val id: Long, val containerId: String, val gridLineNumber: Int
  * @constructor
  */
 data class GameConfig(val createTime: Long, val checkPointLevel: Int, val gameId: Int, val kineves: Int,
-                      val leaveTime: Int, val rotate: Int, val speed: Int, val updateTime: Long)
+                      val leaveTime: Int, var rotate: Int, val speed: Int, val updateTime: Long)
 
 /**
  *

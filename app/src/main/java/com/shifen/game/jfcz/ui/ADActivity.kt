@@ -41,7 +41,9 @@ class ADActivity : BaseActivity()  {
     }
 
     private fun init() {
-        // startActivity(Intent(this, GameActivity::class.java))
+       /* val intent = Intent(this, GameActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)*/
 
         go.setOnClickListener{
             stopTimer()
