@@ -38,8 +38,6 @@ class JFCZApplication() : Application() {
     public override fun onCreate() {
         super.onCreate()
         INSTANCE = this
-
-
         //val crashHandler = CrashHandler.getInstance()
         //crashHandler.init(applicationContext)
 
