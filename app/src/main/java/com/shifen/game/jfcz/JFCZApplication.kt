@@ -39,6 +39,7 @@ class JFCZApplication() : Application() {
         super.onCreate()
         INSTANCE = this
 
+
         //val crashHandler = CrashHandler.getInstance()
         //crashHandler.init(applicationContext)
 
